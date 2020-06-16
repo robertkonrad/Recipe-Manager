@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html xmlns:sec="http://www.thymeleaf.org"
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org"
       xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
-    <title>Test</title>
+    <title>Recipe Manager - List of posts</title>
 </head>
 <body>
-<h1>Test</h1>
-<div sec:authorize="isAuthenticated()">
-    Hello <span sec:authentication="name"></span> !
-    <form method="post" th:action="@{/logout}">
-        <input type="submit" value="Log out">
-    </form>
+<div layout:fragment="content">
+    <h1>Test</h1>
 </div>
 </body>
 </html>
