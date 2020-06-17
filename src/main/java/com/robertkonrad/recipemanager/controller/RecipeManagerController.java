@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class RecipeManagerController {
 
     @RequestMapping(value = "/")
-    public String main() {
-        return "test";
+    public String index() {
+        return "index";
     }
 }

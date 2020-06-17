@@ -18,4 +18,16 @@ public class UserServiceImpl implements UserService {
     public void saveUser(User user) {
         userDAO.saveUser(user);
     }
+
+    @Transactional
+    @Override
+    public boolean usernameAvailable(String username) {
+        return userDAO.usernameAvailable(username);
+    }
+
+    @Transactional
+    @Override
+    public boolean emailAvailable(String email) {
+        return userDAO.emailAvailable(email);
+    }
 }

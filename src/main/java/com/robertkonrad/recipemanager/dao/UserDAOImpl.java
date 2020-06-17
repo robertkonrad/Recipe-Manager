@@ -8,6 +8,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -26,5 +27,26 @@ public class UserDAOImpl implements UserDAO {
         role.setUser(user);
         session.save(user);
         session.save(role);
+    }
+
+    @Override
+    public boolean usernameAvailable(String username) {
+        Session session = entityManager.unwrap(Session.class);
+        User user = session.get(User.class, username);
+        if (user == null) {
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean emailAvailable(String email) {
+        Session session = entityManager.unwrap(Session.class);
+        try {
+            User user = session.createQuery("FROM User WHERE email='" + email + "'", User.class).getSingleResult();
+            return false;
+        } catch (NoResultException e) {
+            return true;
+        }
     }
 }

@@ -1,23 +1,31 @@
 package com.robertkonrad.recipemanager.entity;
 
+import com.robertkonrad.recipemanager.validation.UserMatchesPassword;
+import com.robertkonrad.recipemanager.validation.UserPassword;
+import com.robertkonrad.recipemanager.validation.UserUniqueEmail;
+import com.robertkonrad.recipemanager.validation.UserUniqueUsername;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
+@UserMatchesPassword(groups = {Group1.class})
 @Entity
 @Table(name = "users", schema = "recipemanager")
 public class User {
 
+    @UserUniqueUsername(groups = {Group1.class})
     @Id
-    @NotNull
-    @Size(max = 20, message = "Username length must be between 0 and 20 chars.")
-    @NotEmpty(message = "Username cannot be empty.")
+    @NotNull(groups = {Group1.class})
+    @Size(max = 20, message = "Username length must be between 0 and 20 chars.", groups = {Group1.class})
+    @NotEmpty(message = "Username cannot be empty.", groups = {Group1.class})
     @Column(name = "username", length = 20)
     private String username;
 
-    @Size(max = 68)
-    @NotNull
+    @UserPassword(groups = {Group1.class})
+    @Size(max = 68, groups = {Group1.class})
+    @NotNull(groups = {Group1.class})
     @Column(name = "password", length = 68)
     private String password;
 
@@ -28,6 +36,9 @@ public class User {
     @Column(name = "enabled", columnDefinition = "integer default 1")
     private int enabled = 1;
 
+    @UserUniqueEmail(groups = {Group1.class})
+    @NotNull(groups = {Group1.class})
+    @NotEmpty(message = "Email address cannot be empty.", groups = {Group1.class})
     @Column(name = "email", unique = true, length = 115)
     private String email;
 

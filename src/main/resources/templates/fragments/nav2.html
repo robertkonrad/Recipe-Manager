@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+
+</head>
+<body>
+<div th:fragment="nav">
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+                <div sec:authorize="isAuthenticated()">
+                    Hello <span sec:authentication="name"></span> !
+                    <form method="post" th:action="@{/logout}">
+                        <input type="submit" value="Log out">
+                    </form>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <a class="btn" th:href="@{/login}">Log in</a>
+                    <a class="btn" th:href="@{/user/form}">Sign in</a>
+                </div>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Menu Toggle Script -->
+    <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+
+
+
+    </script>
+</div>
+</body>
+</html>

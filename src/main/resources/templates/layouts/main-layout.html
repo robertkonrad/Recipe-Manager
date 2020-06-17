@@ -5,13 +5,20 @@
 </head>
 
 <body>
-<div class="wrapper">
+<div class="d-flex" id="wrapper">
     <div th:replace="fragments/nav :: nav">
 
     </div>
-    <div layout:fragment="content">
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+        <div th:replace="fragments/nav2 :: nav">
 
+        </div>
+        <div layout:fragment="content">
+
+        </div>
     </div>
+    <!-- /#page-content-wrapper -->
 </div>
 </body>
 </html>
