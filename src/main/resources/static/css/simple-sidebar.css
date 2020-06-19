@@ -41,6 +41,7 @@ body {
   #page-content-wrapper {
     min-width: 0;
     width: 100%;
+    padding-right: 15rem;
   }
 
   #wrapper.toggled #sidebar-wrapper {

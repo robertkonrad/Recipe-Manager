@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 @UserMatchesPassword(groups = {Group1.class})
 @Entity
@@ -44,6 +45,12 @@ public class User {
 
     @OneToOne(mappedBy = "username", cascade = CascadeType.ALL)
     private Role role;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Recipe> recipes;
+
+    @OneToMany(mappedBy = "lastModificatedBy", cascade = CascadeType.ALL)
+    private List<Recipe> modificatedRecipes;
 
     public User() {
 
