@@ -145,7 +145,6 @@ public class Recipe {
                 ", lastModificatedBy=" + lastModificatedBy +
                 ", createdDate=" + createdDate +
                 ", lastModificated=" + lastModificated +
-                ", ingredient=" + ingredient +
                 ", image='" + image + '\'' +
                 '}';
     }

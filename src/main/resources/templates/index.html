@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layouts/main-layout}"
-      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Recipe Manager</title>
 </head>
 <body>
 <div layout:fragment="content">
 
-    <div class="container-fluid">
-        <h1 class="mt-4">Index</h1>
-
+    <div class="row">
+        <div class="col-4 image-center" th:each="recipe : ${recipes}">
+            <img height="250" th:attr="src=@{'/image/'+${recipe.image}}"
+                 th:onerror="'this.src=\'' + @{/img/default.jpg} + '\';'"
+                 width="250"/>
+            <div>
+                <p class="recipe-title" th:text="${recipe.title}"></p>
+            </div>
+        </div>
     </div>
 
 </div>
