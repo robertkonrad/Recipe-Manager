@@ -42,7 +42,7 @@ public class Recipe {
     @Column(name = "last_modificated")
     private Date lastModificated;
 
-    @OneToMany(mappedBy = "ingredient")
+    @OneToMany(mappedBy = "recipe")
     private Set<RecipeIngredient> ingredient;
 
     @Column(name = "image")
