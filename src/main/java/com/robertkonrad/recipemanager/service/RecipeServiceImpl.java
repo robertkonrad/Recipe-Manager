@@ -19,4 +19,10 @@ public class RecipeServiceImpl implements RecipeService{
     public List<Recipe> getAllRecipes() {
         return recipeDAO.getAllRecipes();
     }
+
+    @Override
+    @Transactional
+    public Recipe getRecipe(int recipeId) {
+        return recipeDAO.getRecipe(recipeId);
+    }
 }

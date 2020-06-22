@@ -1,6 +1,15 @@
 .recipe-title {
     text-align: center;
     margin-top: 1rem;
+    font-size: 150%;
+}
+
+.recipe-title-details {
+    text-align: center;
+    margin-top: 1rem;
+    font-size: 250%;
+    border-bottom: double;
+    margin-bottom: 30px;
 }
 
 .image-center {
@@ -12,6 +21,16 @@
     padding: 30px;
 }
 
+a:hover, a:visited, a:link, a:active
+{
+    text-decoration: none;
+    color: black;
+}
+
 .recipe-panel-hover:hover {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.recipe-details {
+    padding: 30px;
 }

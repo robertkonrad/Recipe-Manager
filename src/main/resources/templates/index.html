@@ -10,14 +10,16 @@
 
     <div class="row">
         <div class="col-4 image-center recipe-panel" th:each="recipe : ${recipes}">
-            <div class="recipe-panel-hover">
-                <img height="250" th:attr="src=@{'/img/'+${recipe.image}}"
-                     th:onerror="'this.src=\'' + @{/img/default.jpg} + '\';'"
-                     width="250"/>
-                <div>
-                    <p class="recipe-title" th:text="${recipe.title}"></p>
+            <a th:href="@{'/recipe/'+${recipe.id}}">
+                <div class="recipe-panel-hover">
+                    <img height="250" th:attr="src=@{'/img/'+${recipe.image}}"
+                         th:onerror="'this.src=\'' + @{/img/default.jpg} + '\';'"
+                         width="250"/>
+                    <div>
+                        <p class="recipe-title" th:text="${recipe.title}"></p>
+                    </div>
                 </div>
-            </div>
+            </a>
         </div>
     </div>
 

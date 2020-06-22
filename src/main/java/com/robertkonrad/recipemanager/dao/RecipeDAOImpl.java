@@ -19,4 +19,10 @@ public class RecipeDAOImpl implements RecipeDAO{
         Session session = entityManager.unwrap(Session.class);
         return session.createQuery("FROM Recipe", Recipe.class).getResultList();
     }
+
+    @Override
+    public Recipe getRecipe(int recipeId) {
+        Session session = entityManager.unwrap(Session.class);
+        return session.get(Recipe.class, recipeId);
+    }
 }

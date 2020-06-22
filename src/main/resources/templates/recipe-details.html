@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Manager</title>
+</head>
+<body>
+<div layout:fragment="content">
+
+    <div class="row recipe-details">
+        <div class="col-4 image-center">
+            <img height="250" th:attr="src=@{'/img/'+${recipe.image}}"
+                 th:onerror="'this.src=\'' + @{/img/default.jpg} + '\';'"
+                 width="250"/>
+            <div>
+                <p class="recipe-title-details" th:text="${recipe.title}"></p>
+            </div>
+            <div>
+                <ul class="list-group" th:each="ingredient : ${recipe.ingredient}">
+                    <li class="list-group-item" th:text="${ingredient.amount} + ' - ' + ${ingredient.unit} + ' - ' + ${ingredient.ingredientName}"></li>
+                </ul>
+            </div>
+        </div>
+        <div class="col-8">
+            <h4>Directions:</h4>
+            <p th:text="${recipe.directions}"></p>
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
