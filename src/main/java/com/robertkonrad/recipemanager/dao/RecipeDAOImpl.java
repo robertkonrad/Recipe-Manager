@@ -67,4 +67,18 @@ public class RecipeDAOImpl implements RecipeDAO{
         }
         session.save(recipe);
     }
+
+    @Override
+    public List<Recipe> getRecipesByPage(int page, int recipesOnOnePage) {
+        Session session = entityManager.unwrap(Session.class);
+        int minRowNum;
+        if (page == 1) {
+            minRowNum = 0;
+        } else {
+            minRowNum = (page - 1) * recipesOnOnePage;
+        }
+        return session.createQuery("FROM Recipe", Recipe.class)
+                .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
+                .getResultList();
+    }
 }

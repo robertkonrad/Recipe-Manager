@@ -32,4 +32,10 @@ public class RecipeServiceImpl implements RecipeService{
     public void saveRecipe(Recipe recipe, MultipartFile file) {
         recipeDAO.saveRecipe(recipe, file);
     }
+
+    @Override
+    @Transactional
+    public List<Recipe> getRecipesByPage(int page, int recipesOnOnePage) {
+        return recipeDAO.getRecipesByPage(page, recipesOnOnePage);
+    }
 }

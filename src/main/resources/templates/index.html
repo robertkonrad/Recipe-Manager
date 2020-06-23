@@ -10,7 +10,6 @@
 <div layout:fragment="content">
 
     <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{/recipe/add}">Create new recipe</a>
-
     <div class="row">
         <div class="col-4 image-center recipe-panel" th:each="recipe : ${recipes}">
             <a th:href="@{'/recipe/'+${recipe.id}}">
@@ -25,7 +24,13 @@
             </a>
         </div>
     </div>
-
+    <ul style="text-align: center;" th:if="${pages > 1}">
+        <th:block th:each="i: ${#numbers.sequence(1, pages)}">
+            <a th:href="@{'/page/' + ${i}}"
+               th:style="${i} == ${page} ? 'color: black; font-weight: bold;' : ''"
+               th:text="${i}"></a>
+        </th:block>
+    </ul>
 </div>
 </body>
 </html>

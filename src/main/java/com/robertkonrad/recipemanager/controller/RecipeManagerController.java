@@ -22,9 +22,20 @@ public class RecipeManagerController {
     private RecipeService recipeService;
 
     @RequestMapping(value = "/")
-    public String index(Model theModel) {
-        List<Recipe> recipes = recipeService.getAllRecipes();
+    public String index() {
+        return "redirect:/page/1";
+    }
+
+    @RequestMapping(value = "/page/{page}")
+    public String indexPage(@PathVariable int page, Model theModel) {
+        int recipesOnOnePage = 12, pages;
+        List<Recipe> recipes = recipeService.getRecipesByPage(page, recipesOnOnePage);
+        pages = (int) Math.ceil((double) recipeService.getAllRecipes().size() / recipesOnOnePage);
+        if (pages == 0) {
+            pages++;
+        }
         theModel.addAttribute("recipes", recipes);
+        theModel.addAttribute("pages", pages);
         return "index";
     }
 
@@ -44,7 +55,7 @@ public class RecipeManagerController {
 
     @RequestMapping(value = "/recipe/save")
     public String saveRecipe(@Valid @ModelAttribute("recipe") Recipe recipe, BindingResult theBindingResult, @RequestParam("file") MultipartFile file) {
-        if (theBindingResult.hasErrors()){
+        if (theBindingResult.hasErrors()) {
             return "recipe-form";
         } else {
             recipeService.saveRecipe(recipe, file);
