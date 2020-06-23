@@ -11,6 +11,7 @@
 	<groupId>com.robertkonrad</groupId>
 	<artifactId>recipe-manager</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>war</packaging>
 	<name>recipe-manager</name>
 	<description>Recipe Manager Web Application</description>
 

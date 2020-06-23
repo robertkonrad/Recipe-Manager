@@ -34,3 +34,7 @@ a:hover, a:visited, a:link, a:active
 .recipe-details {
     padding: 30px;
 }
+
+.bi-arrow-left-short {
+    font-size: 200%;
+}

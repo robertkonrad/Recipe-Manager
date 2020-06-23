@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layouts/main-layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org">
 <head>
     <title>Recipe Manager</title>
 </head>
 <body>
 <div layout:fragment="content">
+
+    <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{/recipe/add}">Create new recipe</a>
 
     <div class="row">
         <div class="col-4 image-center recipe-panel" th:each="recipe : ${recipes}">

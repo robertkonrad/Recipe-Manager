@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Manager</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:object="${recipe}" th:method="post" th:action="@{/recipe/save}" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                    <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                </div>
+            </tr>
+            <tr>
+                <td>Title:</td>
+                <td><input th:field="*{title}" type="text"></td>
+            </tr>
+            <tr>
+                <td>Directions*:</td>
+                <td><textarea cols="100" rows="10" th:field="*{directions}"></textarea></td>
+            </tr>
+            <tr>
+                <td>File</td>
+                <td><input name="file" type="file"></td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Submit"></td>
+            </tr>
+            <tr>
+                <td>* (max 8000 characters)</td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

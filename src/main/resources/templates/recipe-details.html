@@ -7,7 +7,16 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <div>
+        <a class="btn" href="#" onclick="window.history.go(-1); return false;">
+            <svg class="bi bi-arrow-left-short" width="1em" height="1em" viewBox="0 0 16 16" fill="currentColor"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M7.854 4.646a.5.5 0 0 1 0 .708L5.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0z"/>
+                <path fill-rule="evenodd" d="M4.5 8a.5.5 0 0 1 .5-.5h6.5a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5z"/>
+            </svg>
+        </a>
+    </div>
     <div class="row recipe-details">
         <div class="col-4 image-center">
             <img height="250" th:attr="src=@{'/img/'+${recipe.image}}"
@@ -18,7 +27,8 @@
             </div>
             <div>
                 <ul class="list-group" th:each="ingredient : ${recipe.ingredient}">
-                    <li class="list-group-item" th:text="${ingredient.amount} + ' - ' + ${ingredient.unit} + ' - ' + ${ingredient.ingredientName}"></li>
+                    <li class="list-group-item"
+                        th:text="${ingredient.amount} + ' - ' + ${ingredient.unit} + ' - ' + ${ingredient.ingredientName}"></li>
                 </ul>
             </div>
         </div>
