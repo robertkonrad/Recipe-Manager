@@ -11,7 +11,7 @@ public interface RecipeDAO {
 
     Recipe getRecipe(int recipeId);
 
-    void saveRecipe(Recipe recipe, MultipartFile file);
+    void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
 
     List<Recipe> getRecipesByPage(int page, int recipesOnOnePage);
 }

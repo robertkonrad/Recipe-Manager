@@ -29,8 +29,8 @@ public class RecipeServiceImpl implements RecipeService{
 
     @Override
     @Transactional
-    public void saveRecipe(Recipe recipe, MultipartFile file) {
-        recipeDAO.saveRecipe(recipe, file);
+    public void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
+        recipeDAO.saveRecipe(recipe, file, ingredientsList);
     }
 
     @Override

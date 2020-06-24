@@ -38,3 +38,12 @@ a:hover, a:visited, a:link, a:active
 .bi-arrow-left-short {
     font-size: 200%;
 }
+
+ul {
+    list-style-type: none;
+    padding-left: 0;
+}
+
+ul li input {
+    margin-bottom: 2%;
+}

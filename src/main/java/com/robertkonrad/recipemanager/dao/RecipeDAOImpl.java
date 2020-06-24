@@ -1,6 +1,7 @@
 package com.robertkonrad.recipemanager.dao;
 
 import com.robertkonrad.recipemanager.entity.Recipe;
+import com.robertkonrad.recipemanager.entity.RecipeIngredient;
 import com.robertkonrad.recipemanager.entity.User;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,12 @@ import javax.servlet.ServletContext;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 @Repository
-public class RecipeDAOImpl implements RecipeDAO{
+public class RecipeDAOImpl implements RecipeDAO {
 
     @Autowired
     private EntityManager entityManager;
@@ -39,7 +41,7 @@ public class RecipeDAOImpl implements RecipeDAO{
     }
 
     @Override
-    public void saveRecipe(Recipe recipe, MultipartFile file) {
+    public void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
         Session session = entityManager.unwrap(Session.class);
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         User user = session.get(User.class, auth.getName());
@@ -47,7 +49,7 @@ public class RecipeDAOImpl implements RecipeDAO{
         Date date = new Date();
         recipe.setCreatedDate(date);
         recipe.setLastModificated(date);
-        if (!file.isEmpty()){
+        if (!file.isEmpty()) {
             String folder = "src/main/resources/static/img/";
             System.out.println(folder);
             Path path = Paths.get(folder + recipe.getTitle() + "-" + file.getOriginalFilename());
@@ -65,7 +67,19 @@ public class RecipeDAOImpl implements RecipeDAO{
         } else {
             recipe.setImage("");
         }
-        session.save(recipe);
+        if (!ingredientsList.isEmpty()){
+            for (String[] ingredient : ingredientsList) {
+                if (!ingredient[0].trim().isEmpty()) {
+                    RecipeIngredient recipeIngredient = new RecipeIngredient();
+                    recipeIngredient.setIngredientName(ingredient[0]);
+                    recipeIngredient.setAmount(Double.parseDouble(ingredient[1]));
+                    recipeIngredient.setUnit(ingredient[2]);
+                    recipeIngredient.setRecipe(recipe);
+                    session.save(recipeIngredient);
+                }
+            }
+        }
+        session.merge(recipe);
     }
 
     @Override

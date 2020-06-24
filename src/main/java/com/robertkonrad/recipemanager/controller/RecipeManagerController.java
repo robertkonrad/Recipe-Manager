@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -54,11 +56,20 @@ public class RecipeManagerController {
     }
 
     @RequestMapping(value = "/recipe/save")
-    public String saveRecipe(@Valid @ModelAttribute("recipe") Recipe recipe, BindingResult theBindingResult, @RequestParam("file") MultipartFile file) {
+    public String saveRecipe(@Valid @ModelAttribute("recipe") Recipe recipe, BindingResult theBindingResult, @RequestParam("file") MultipartFile file,
+                             @RequestParam("ingredient-li") String[] ingredients, @RequestParam("amount-li") double[] amount, @RequestParam("unit-li") String[] unit) {
         if (theBindingResult.hasErrors()) {
             return "recipe-form";
         } else {
-            recipeService.saveRecipe(recipe, file);
+            List<String[]> ingredientsList = new ArrayList<>();
+            for (int i = 0; i < ingredients.length; i++) {
+                String[] temp = new String[3];
+                temp[0] = ingredients[i];
+                temp[1] = String.valueOf(amount[i]);
+                temp[2] = unit[i];
+                ingredientsList.add(temp);
+            }
+            recipeService.saveRecipe(recipe, file, ingredientsList);
             return "redirect:/";
         }
     }
