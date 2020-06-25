@@ -52,6 +52,9 @@ public class User {
     @OneToMany(mappedBy = "lastModificatedBy", cascade = CascadeType.ALL)
     private List<Recipe> modificatedRecipes;
 
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Review> reviews;
+
     public User() {
 
     }
@@ -113,12 +116,34 @@ public class User {
         this.role = role;
     }
 
+    public List<Recipe> getRecipes() {
+        return recipes;
+    }
+
+    public void setRecipes(List<Recipe> recipes) {
+        this.recipes = recipes;
+    }
+
+    public List<Recipe> getModificatedRecipes() {
+        return modificatedRecipes;
+    }
+
+    public void setModificatedRecipes(List<Recipe> modificatedRecipes) {
+        this.modificatedRecipes = modificatedRecipes;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
     @Override
     public String toString() {
         return "User{" +
                 "username='" + username + '\'' +
-                ", password='" + password + '\'' +
-                ", matchingPassword='" + matchingPassword + '\'' +
                 ", enabled=" + enabled +
                 ", email='" + email + '\'' +
                 ", role=" + role +

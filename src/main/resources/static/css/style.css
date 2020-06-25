@@ -47,3 +47,18 @@ ul {
 ul li input {
     margin-bottom: 2%;
 }
+
+#reviews-title {
+    border-width: 4px;
+    border-bottom-style: groove;
+}
+
+.review {
+    border-width: 2px;
+    border-bottom-style: groove;
+}
+
+.review-description {
+    text-align: justify;
+    word-break: break-word;
+}

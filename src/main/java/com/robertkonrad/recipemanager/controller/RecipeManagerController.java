@@ -1,7 +1,9 @@
 package com.robertkonrad.recipemanager.controller;
 
 import com.robertkonrad.recipemanager.entity.Recipe;
+import com.robertkonrad.recipemanager.entity.Review;
 import com.robertkonrad.recipemanager.service.RecipeService;
+import com.robertkonrad.recipemanager.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -22,6 +23,9 @@ public class RecipeManagerController {
 
     @Autowired
     private RecipeService recipeService;
+
+    @Autowired
+    private ReviewService reviewService;
 
     @RequestMapping(value = "/")
     public String index() {
@@ -44,7 +48,9 @@ public class RecipeManagerController {
     @RequestMapping(value = "/recipe/{recipeId}")
     public String recipeDetails(@PathVariable int recipeId, Model theModel) {
         Recipe recipe = recipeService.getRecipe(recipeId);
+        List<Review> reviews = recipe.getReviews();
         theModel.addAttribute("recipe", recipe);
+        theModel.addAttribute("reviews", reviews);
         return "recipe-details";
     }
 

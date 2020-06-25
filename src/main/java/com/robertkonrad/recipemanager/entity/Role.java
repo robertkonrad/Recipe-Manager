@@ -56,7 +56,7 @@ public class Role {
 
     @Override
     public String toString() {
-        return "Role [id=" + id + ", authority=" + authority + ", user=" + username + "]";
+        return "Role [id=" + id + ", authority=" + authority + "]";
     }
 
 

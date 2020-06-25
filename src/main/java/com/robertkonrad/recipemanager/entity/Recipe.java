@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -44,6 +45,9 @@ public class Recipe {
 
     @OneToMany(mappedBy = "recipe")
     private Set<RecipeIngredient> ingredient;
+
+    @OneToMany(mappedBy = "recipe")
+    private List<Review> reviews;
 
     @Column(name = "image")
     private String image;
@@ -133,6 +137,14 @@ public class Recipe {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public List<Review> getReviews() {
+        return reviews;
+    }
+
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
     }
 
     @Override
