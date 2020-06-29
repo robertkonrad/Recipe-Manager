@@ -51,9 +51,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         recipe.setLastModificated(date);
         if (!file.isEmpty()) {
             String folder = "src/main/resources/static/img/";
-            System.out.println(folder);
             Path path = Paths.get(folder + recipe.getTitle() + "-" + file.getOriginalFilename());
-            System.out.println(path);
             try {
                 file.transferTo(path);
             } catch (IllegalStateException e) {
