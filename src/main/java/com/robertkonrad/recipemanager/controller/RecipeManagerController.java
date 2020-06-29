@@ -46,8 +46,10 @@ public class RecipeManagerController {
     public String recipeDetails(@PathVariable int recipeId, Model theModel) {
         Recipe recipe = recipeService.getRecipe(recipeId);
         List<Review> reviews = recipe.getReviews();
+        Review review = new Review();
         theModel.addAttribute("recipe", recipe);
         theModel.addAttribute("reviews", reviews);
+        theModel.addAttribute("review", review);
         return "recipe-details";
     }
 
@@ -74,6 +76,21 @@ public class RecipeManagerController {
             }
             recipeService.saveRecipe(recipe, file, ingredientsList);
             return "redirect:/";
+        }
+    }
+
+    @PostMapping(value = "/recipe/{recipeId}/review/add")
+    public String saveReview(@Valid @ModelAttribute("review") Review review, BindingResult theBindingResult, @PathVariable int recipeId, Model theModel){
+        if (theBindingResult.hasErrors()){
+            Recipe recipe = recipeService.getRecipe(recipeId);
+            List<Review> reviews = recipe.getReviews();
+            theModel.addAttribute("recipe", recipe);
+            theModel.addAttribute("reviews", reviews);
+            theModel.addAttribute("review", review);
+            return "recipe-details";
+        } else {
+            reviewService.saveReview(recipeId, review);
+            return "redirect:/recipe/{recipeId}";
         }
     }
 }

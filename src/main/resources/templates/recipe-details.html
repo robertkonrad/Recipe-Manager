@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layouts/main-layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org">
 <head>
     <title>Recipe Manager</title>
 </head>
@@ -39,6 +40,35 @@
     </div>
     <div class="col-11 offset-1">
         <h3 id="reviews-title">Reviews:</h3>
+        <div sec:authorize="isAuthenticated()" style="border-width:2px;border-bottom-style:groove;">
+            <form method="post" th:action="@{'/recipe/'+${recipe.id}+'/review/add'}" th:object="${review}">
+                <input th:field="*{id}" type="hidden">
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                    <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                </div>
+                <table>
+                    <tr>
+                        <td>Description:</td>
+                        <td><textarea cols="90" rows="5" th:field="*{description}"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td>Stars:</td>
+                        <td>
+                            <select th:field="*{stars}">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><input type="submit" value="Add review"></td>
+                    </tr>
+                </table>
+            </form>
+        </div>
         <div class="review" th:each="review : ${reviews}">
             <span th:text="${review.author.username} + ' '"></span>
             <span th:text="${review.createdDate} + ' '"></span>
