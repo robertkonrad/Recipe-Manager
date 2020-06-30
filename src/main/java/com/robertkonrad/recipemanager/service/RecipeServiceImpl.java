@@ -38,4 +38,10 @@ public class RecipeServiceImpl implements RecipeService{
     public List<Recipe> getRecipesByPage(int page, int recipesOnOnePage) {
         return recipeDAO.getRecipesByPage(page, recipesOnOnePage);
     }
+
+    @Override
+    @Transactional
+    public void deleteRecipe(int recipeId) {
+        recipeDAO.deleteRecipe(recipeId);
+    }
 }

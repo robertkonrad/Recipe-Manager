@@ -62,3 +62,7 @@ ul li input {
     text-align: justify;
     word-break: break-word;
 }
+
+.delete-update-form {
+    display: inline;
+}

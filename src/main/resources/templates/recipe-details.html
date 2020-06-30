@@ -26,6 +26,26 @@
             <div>
                 <p class="recipe-title-details" th:text="${recipe.title}"></p>
             </div>
+            <div style="margin-bottom: 25px;">
+                <div sec:authorize="hasAuthority('ADMIN')">
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id}}" th:method="delete">
+                        <input class="btn btn-danger" type="submit" value="Delete"
+                               onclick="return confirm('Are you sure you want to delete this item?');">
+                    </form>
+<!--                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id}}" th:method="put">-->
+<!--                        <input class="btn btn-info" type="submit" value="Update">-->
+<!--                    </form>-->
+                </div>
+                <div sec:authorize="hasAuthority('USER')" th:if="${recipe.author.username} == ${#authentication.name}">
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id}}" th:method="delete">
+                        <input class="btn btn-danger" type="submit" value="Delete"
+                               onclick="return confirm('Are you sure you want to delete this item?');">
+                    </form>
+<!--                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id}}" th:method="put">-->
+<!--                        <input class="btn btn-info" type="submit" value="Update">-->
+<!--                    </form>-->
+                </div>
+            </div>
             <div>
                 <ul class="list-group" th:each="ingredient : ${recipe.ingredient}">
                     <li class="list-group-item"
@@ -35,13 +55,13 @@
         </div>
         <div class="col-8">
             <h4>Directions:</h4>
-            <p th:text="${recipe.directions}"></p>
+            <p th:text="${recipe.directions}" style="white-space: pre-line"></p>
         </div>
     </div>
     <div class="col-11 offset-1">
         <h3 id="reviews-title">Reviews:</h3>
         <div sec:authorize="isAuthenticated()" style="border-width:2px;border-bottom-style:groove;">
-            <form method="post" th:action="@{'/recipe/'+${recipe.id}+'/review/add'}" th:object="${review}">
+            <form th:method="post" th:action="@{'/recipe/'+${recipe.id}+'/review/add'}" th:object="${review}">
                 <input th:field="*{id}" type="hidden">
                 <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
                     <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
@@ -55,6 +75,7 @@
                         <td>Stars:</td>
                         <td>
                             <select th:field="*{stars}">
+                                <option value="0">0</option>
                                 <option value="1">1</option>
                                 <option value="2">2</option>
                                 <option value="3">3</option>

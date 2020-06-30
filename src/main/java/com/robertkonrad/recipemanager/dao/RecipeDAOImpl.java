@@ -2,6 +2,7 @@ package com.robertkonrad.recipemanager.dao;
 
 import com.robertkonrad.recipemanager.entity.Recipe;
 import com.robertkonrad.recipemanager.entity.RecipeIngredient;
+import com.robertkonrad.recipemanager.entity.Review;
 import com.robertkonrad.recipemanager.entity.User;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.EntityManager;
 import javax.servlet.ServletContext;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -65,7 +66,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             recipe.setImage("");
         }
-        if (!ingredientsList.isEmpty()){
+        if (!ingredientsList.isEmpty()) {
             for (String[] ingredient : ingredientsList) {
                 if (!ingredient[0].trim().isEmpty()) {
                     RecipeIngredient recipeIngredient = new RecipeIngredient();
@@ -92,5 +93,25 @@ public class RecipeDAOImpl implements RecipeDAO {
         return session.createQuery("FROM Recipe", Recipe.class)
                 .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
                 .getResultList();
+    }
+
+    @Override
+    public void deleteRecipe(int recipeId) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Review> reviews = session.createQuery("FROM Review r WHERE r.recipe.id='" + recipeId + "'", Review.class).getResultList();
+        List<RecipeIngredient> ingredients = session.createQuery("FROM RecipeIngredient i WHERE i.recipe.id='" + recipeId + "'", RecipeIngredient.class).getResultList();
+        Recipe recipe = session.get(Recipe.class, recipeId);
+        for (Review review : reviews) {
+            session.delete(review);
+        }
+        for (RecipeIngredient ingredient : ingredients) {
+            session.delete(ingredient);
+        }
+        if (!recipe.getImage().equals("")) {
+            String folder = "src/main/resources/static/img/";
+            File file = new File(folder + recipe.getImage());
+            file.delete();
+        }
+        session.delete(recipe);
     }
 }

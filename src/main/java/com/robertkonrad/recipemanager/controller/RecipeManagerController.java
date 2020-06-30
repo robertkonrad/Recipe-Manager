@@ -79,6 +79,12 @@ public class RecipeManagerController {
         }
     }
 
+    @PostMapping(value = "/recipe/{recipeId}")
+    public String deleteRecipe(@PathVariable int recipeId){
+        recipeService.deleteRecipe(recipeId);
+        return "redirect:/";
+    }
+
     @PostMapping(value = "/recipe/{recipeId}/review/add")
     public String saveReview(@Valid @ModelAttribute("review") Review review, BindingResult theBindingResult, @PathVariable int recipeId, Model theModel){
         if (theBindingResult.hasErrors()){

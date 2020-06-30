@@ -14,4 +14,6 @@ public interface RecipeService {
     void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
 
     List<Recipe> getRecipesByPage(int page, int recipesOnOnePage);
+
+    void deleteRecipe(int recipeId);
 }
