@@ -16,4 +16,6 @@ public interface RecipeDAO {
     List<Recipe> getRecipesByPage(int page, int recipesOnOnePage);
 
     void deleteRecipe(int recipeId);
+
+    void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
 }

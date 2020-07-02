@@ -79,15 +79,45 @@ public class RecipeManagerController {
         }
     }
 
-    @PostMapping(value = "/recipe/{recipeId}")
-    public String deleteRecipe(@PathVariable int recipeId){
+    @PostMapping(value = "/recipe/{recipeId}/delete")
+    public String deleteRecipe(@PathVariable int recipeId) {
         recipeService.deleteRecipe(recipeId);
         return "redirect:/";
     }
 
-    @PostMapping(value = "/recipe/{recipeId}/review/add")
-    public String saveReview(@Valid @ModelAttribute("review") Review review, BindingResult theBindingResult, @PathVariable int recipeId, Model theModel){
+    @PostMapping(value = "/recipe/{recipeId}/edit")
+    public String updateRecipe(@PathVariable int recipeId, Model theModel) {
+        Recipe recipe = recipeService.getRecipe(recipeId);
+        theModel.addAttribute("recipe", recipe);
+        return "recipe-update-form";
+    }
+
+    @PostMapping(value = "/recipe/{recipeId}/edit/save")
+    public Object saveUpdateRecipe(@Valid @ModelAttribute("recipe") Recipe recipe,
+                                   BindingResult theBindingResult, @RequestParam(value = "ingredient-li", required = false) String[] ingredients,
+                                   @RequestParam(value = "amount-li", required = false) double[] amount, @RequestParam(value = "unit-li", required = false) String[] unit,
+                                   @RequestParam("file") MultipartFile file) {
         if (theBindingResult.hasErrors()){
+            return "recipe-update-form";
+        } else {
+            List<String[]> ingredientsList = new ArrayList<>();
+            if (ingredients != null) {
+                for (int i = 0; i < ingredients.length; i++) {
+                    String[] temp = new String[3];
+                    temp[0] = ingredients[i];
+                    temp[1] = String.valueOf(amount[i]);
+                    temp[2] = unit[i];
+                    ingredientsList.add(temp);
+                }
+            }
+            recipeService.updateRecipe(recipe, file, ingredientsList);
+            return "redirect:/recipe/{recipeId}";
+        }
+    }
+
+    @PostMapping(value = "/recipe/{recipeId}/review/add")
+    public String saveReview(@Valid @ModelAttribute("review") Review review, BindingResult theBindingResult, @PathVariable int recipeId, Model theModel) {
+        if (theBindingResult.hasErrors()) {
             Recipe recipe = recipeService.getRecipe(recipeId);
             List<Review> reviews = recipe.getReviews();
             theModel.addAttribute("recipe", recipe);

@@ -21,12 +21,12 @@
         var removeBtn = document.createElement("input");
         removeBtn.type = "button";
         removeBtn.value = "-";
-        removeBtn.onclick = remove;
+        removeBtn.setAttribute("onclick", "remove(this)");
         li.appendChild(removeBtn);
         ul.appendChild(li);
     }
 
     function remove(e){
-        var element = e.target;
+        var element = e;
         element.parentNode.remove();
     }

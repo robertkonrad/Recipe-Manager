@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Manager</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <form th:object="${recipe}" th:method="post" th:action="@{'/recipe/' + ${recipe.id} + '/edit/save'}" enctype="multipart/form-data">
+        <table>
+            <input type="hidden" th:field="${recipe.id}">
+            <tr>
+                <div class="alert alert-danger" th:if="${#fields.hasErrors('*')}">
+                    <p th:each="err : ${#fields.errors('*')}" th:text="${err}"></p>
+                </div>
+            </tr>
+            <tr>
+                <td>Title*:</td>
+                <td><input th:field="*{title}" type="text"></td>
+            </tr>
+            <tr>
+                <td>Directions**:</td>
+                <td><textarea cols="100" rows="10" th:field="*{directions}"></textarea></td>
+            </tr>
+            <tr>
+                <td>File:</td>
+                <td>
+                    <input name="file" type="file">
+                    <span th:text="${recipe.image}">x</span>
+                </td>
+            </tr>
+            <tr>
+                <td>Ingredients:</td>
+                <td>
+                    <ul id="ingredients-ul">
+                        <li th:each="ingre : ${recipe.ingredient}">
+                            <input type="text" name="ingredient-li" placeholder="Ingredient" th:value="${ingre.ingredientName}">
+                            <input type="number" name="amount-li" placeholder="Amount" step="0.01" th:value="${ingre.amount}">
+                            <input type="text" name="unit-li" placeholder="Unit" th:value="${ingre.unit}">
+                            <input type="button" value="-" onclick="remove(this)">
+                        </li>
+                    </ul>
+                    <input type="button" value="Add field" class="add_form_field" onclick="addItem()">
+                </td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Submit"></td>
+            </tr>
+            <tr>
+                <td>*Cannot be empty.</td>
+            </tr>
+            <tr>
+                <td>**Cannot be empty (max 8000 characters).</td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>

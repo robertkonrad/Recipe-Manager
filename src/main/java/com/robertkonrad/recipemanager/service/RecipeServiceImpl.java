@@ -44,4 +44,10 @@ public class RecipeServiceImpl implements RecipeService{
     public void deleteRecipe(int recipeId) {
         recipeDAO.deleteRecipe(recipeId);
     }
+
+    @Override
+    @Transactional
+    public void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
+        recipeDAO.updateRecipe(recipe, file, ingredientsList);
+    }
 }

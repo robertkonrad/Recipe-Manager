@@ -114,4 +114,51 @@ public class RecipeDAOImpl implements RecipeDAO {
         }
         session.delete(recipe);
     }
+
+    @Override
+    public void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
+        Session session = entityManager.unwrap(Session.class);
+        Recipe oldRecipe = session.get(Recipe.class, recipe.getId());
+        recipe.setCreatedDate(oldRecipe.getCreatedDate());
+        Date date = new Date();
+        recipe.setLastModificated(date);
+        recipe.setAuthor(oldRecipe.getAuthor());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = session.get(User.class, auth.getName());
+        recipe.setLastModificatedBy(user);
+        if (!file.isEmpty()) {
+            String folder = "src/main/resources/static/img/";
+            Path path = Paths.get(folder + recipe.getTitle() + "-" + file.getOriginalFilename());
+            try {
+                file.transferTo(path);
+            } catch (IllegalStateException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            recipe.setImage(recipe.getTitle() + "-" + file.getOriginalFilename());
+        } else {
+            recipe.setImage(oldRecipe.getImage());
+        }
+        List<RecipeIngredient> ingredients = session.createQuery("FROM RecipeIngredient i WHERE i.recipe.id='" + recipe.getId() + "'", RecipeIngredient.class)
+                .getResultList();
+        for (RecipeIngredient ingredient : ingredients) {
+            session.delete(ingredient);
+        }
+        if (!ingredientsList.isEmpty()) {
+            for (String[] ingre : ingredientsList) {
+                if (!ingre[0].trim().isEmpty()) {
+                    RecipeIngredient recipeIngredient = new RecipeIngredient();
+                    recipeIngredient.setIngredientName(ingre[0]);
+                    recipeIngredient.setAmount(Double.parseDouble(ingre[1]));
+                    recipeIngredient.setUnit(ingre[2]);
+                    recipeIngredient.setRecipe(recipe);
+                    session.merge(recipeIngredient);
+                }
+            }
+        }
+        session.merge(recipe);
+    }
 }
