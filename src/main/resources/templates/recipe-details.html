@@ -36,21 +36,37 @@
             </div>
             <div style="margin-bottom: 25px;">
                 <div sec:authorize="hasAuthority('ADMIN')">
-                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/delete'}" th:method="delete">
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/delete'}"
+                          th:method="delete">
                         <input class="btn btn-danger" type="submit" value="Delete"
                                onclick="return confirm('Are you sure you want to delete this item?');">
                     </form>
                     <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/edit'}" th:method="put">
                         <input class="btn btn-info" type="submit" value="Update">
+                    </form>
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/pdf'}" th:method="post"
+                          target="_blank">
+                        <input class="btn btn-info" type="submit" value="PDF">
                     </form>
                 </div>
                 <div sec:authorize="hasAuthority('USER')" th:if="${recipe.author.username} == ${#authentication.name}">
-                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/delete'}" th:method="delete">
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/delete'}"
+                          th:method="delete">
                         <input class="btn btn-danger" type="submit" value="Delete"
                                onclick="return confirm('Are you sure you want to delete this item?');">
                     </form>
                     <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/edit'}" th:method="put">
                         <input class="btn btn-info" type="submit" value="Update">
+                    </form>
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/pdf'}" th:method="post"
+                          target="_blank">
+                        <input class="btn btn-info" type="submit" value="PDF">
+                    </form>
+                </div>
+                <div sec:authorize="isAnonymous()">
+                    <form class="delete-update-form" th:action="@{'/recipe/' + ${recipe.id} + '/pdf'}" th:method="post"
+                          target="_blank">
+                        <input class="btn btn-info" type="submit" value="PDF">
                     </form>
                 </div>
             </div>
@@ -98,6 +114,7 @@
                 </table>
             </form>
         </div>
+        <h5 th:if="${#lists.size(reviews)} == 0">No reviews yet!</h5>
         <div class="review" th:each="review : ${reviews}">
             <span th:text="${review.author.username} + ' '"></span>
             <span th:text="${review.createdDate} + ' '"></span>

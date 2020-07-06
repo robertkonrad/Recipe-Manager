@@ -4,7 +4,12 @@ import com.robertkonrad.recipemanager.entity.Recipe;
 import com.robertkonrad.recipemanager.entity.Review;
 import com.robertkonrad.recipemanager.service.RecipeService;
 import com.robertkonrad.recipemanager.service.ReviewService;
+import com.robertkonrad.recipemanager.util.PdfUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -12,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.ByteArrayInputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,7 +103,7 @@ public class RecipeManagerController {
                                    BindingResult theBindingResult, @RequestParam(value = "ingredient-li", required = false) String[] ingredients,
                                    @RequestParam(value = "amount-li", required = false) double[] amount, @RequestParam(value = "unit-li", required = false) String[] unit,
                                    @RequestParam("file") MultipartFile file) {
-        if (theBindingResult.hasErrors()){
+        if (theBindingResult.hasErrors()) {
             return "recipe-update-form";
         } else {
             List<String[]> ingredientsList = new ArrayList<>();
@@ -128,5 +134,14 @@ public class RecipeManagerController {
             reviewService.saveReview(recipeId, review);
             return "redirect:/recipe/{recipeId}";
         }
+    }
+
+    @PostMapping(value = "/recipe/{recipeId}/pdf", produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> getPdf(@PathVariable int recipeId) {
+        Recipe recipe = recipeService.getRecipe(recipeId);
+        ByteArrayInputStream byteArrayInputStream = PdfUtil.generatePdf(recipe);
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.add("Content-Disposition", "inline; filename=" + recipe.getTitle() + ".pdf");
+        return ResponseEntity.ok().headers(httpHeaders).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(byteArrayInputStream));
     }
 }
