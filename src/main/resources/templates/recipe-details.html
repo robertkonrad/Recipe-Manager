@@ -23,6 +23,14 @@
             <img height="250" th:attr="src=@{'/img/'+${recipe.image}}"
                  th:onerror="'this.src=\'' + @{/img/default.jpg} + '\';'"
                  width="250"/>
+            <div class="recipe-information">
+                <span th:text="'Author: ' + ${recipe.author.username} + ' | '"></span>
+                <span th:text="'Created: ' + ${recipe.createdDate}"></span>
+            </div>
+            <div class="recipe-information" th:if="${recipe.lastModificatedBy} != null">
+                <span th:text="'Last edited by: ' + ${recipe.lastModificatedBy.username} + ' | '"></span>
+                <span th:text="'Last edited : ' + ${recipe.lastModificated}"></span>
+            </div>
             <div>
                 <p class="recipe-title-details" th:text="${recipe.title}"></p>
             </div>
