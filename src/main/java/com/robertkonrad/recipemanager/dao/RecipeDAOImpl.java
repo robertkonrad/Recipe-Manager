@@ -66,6 +66,8 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             recipe.setImage("");
         }
+        int newId = (int)session.save(recipe);
+        Recipe newRecipe = session.get(Recipe.class, newId);
         if (!ingredientsList.isEmpty()) {
             for (String[] ingredient : ingredientsList) {
                 if (!ingredient[0].trim().isEmpty()) {
@@ -73,12 +75,11 @@ public class RecipeDAOImpl implements RecipeDAO {
                     recipeIngredient.setIngredientName(ingredient[0]);
                     recipeIngredient.setAmount(Double.parseDouble(ingredient[1]));
                     recipeIngredient.setUnit(ingredient[2]);
-                    recipeIngredient.setRecipe(recipe);
-                    session.save(recipeIngredient);
+                    recipeIngredient.setRecipe(newRecipe);
+                    session.merge(recipeIngredient);
                 }
             }
         }
-        session.merge(recipe);
     }
 
     @Override

@@ -6,7 +6,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "recipe", schema = "recipemanager")
@@ -44,7 +43,7 @@ public class Recipe {
     private Date lastModificated;
 
     @OneToMany(mappedBy = "recipe")
-    private Set<RecipeIngredient> ingredient;
+    private List<RecipeIngredient> ingredient;
 
     @OneToMany(mappedBy = "recipe")
     private List<Review> reviews;
@@ -56,7 +55,7 @@ public class Recipe {
 
     }
 
-    public Recipe(@NotEmpty(message = "Title cannot be empty!") @NotNull @Size(max = 100) String title, @NotEmpty(message = "Directions cannnot be empty!") @NotNull @Size(max = 8000) String directions, User author, User lastModificatedBy, Date createdDate, Date lastModificated, Set<RecipeIngredient> ingredient, String image) {
+    public Recipe(@NotEmpty(message = "Title cannot be empty!") @NotNull @Size(max = 100) String title, @NotEmpty(message = "Directions cannnot be empty!") @NotNull @Size(max = 8000) String directions, User author, User lastModificatedBy, Date createdDate, Date lastModificated, List<RecipeIngredient> ingredient, String image) {
         this.title = title;
         this.directions = directions;
         this.author = author;
@@ -123,11 +122,11 @@ public class Recipe {
         this.lastModificated = lastModificated;
     }
 
-    public Set<RecipeIngredient> getIngredient() {
+    public List<RecipeIngredient> getIngredient() {
         return ingredient;
     }
 
-    public void setIngredient(Set<RecipeIngredient> ingredient) {
+    public void setIngredient(List<RecipeIngredient> ingredient) {
         this.ingredient = ingredient;
     }
 

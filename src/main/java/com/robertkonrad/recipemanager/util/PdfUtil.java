@@ -38,7 +38,7 @@ public class PdfUtil {
             image.scaleAbsolute(150f,150f);
             List ingredientsList = new List();
             ingredientsList.setListSymbol("");
-            java.util.Set<RecipeIngredient> ingredients = recipe.getIngredient();
+            java.util.List<RecipeIngredient> ingredients = recipe.getIngredient();
             for (RecipeIngredient ingredient : ingredients) {
                 ListItem listItem = new ListItem(ingredient.getAmount() + " - " + ingredient.getUnit() + " - " + ingredient.getIngredientName());
                 listItem.setAlignment(Element.ALIGN_CENTER);
