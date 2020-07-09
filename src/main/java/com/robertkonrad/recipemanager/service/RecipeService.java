@@ -18,4 +18,8 @@ public interface RecipeService {
     void deleteRecipe(int recipeId);
 
     void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
+
+    List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q);
+
+    int getNumberOfAllSearchedRecipes(String q);
 }

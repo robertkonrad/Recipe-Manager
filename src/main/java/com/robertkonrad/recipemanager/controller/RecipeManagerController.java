@@ -5,6 +5,7 @@ import com.robertkonrad.recipemanager.entity.Review;
 import com.robertkonrad.recipemanager.service.RecipeService;
 import com.robertkonrad.recipemanager.service.ReviewService;
 import com.robertkonrad.recipemanager.util.PdfUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -36,10 +37,16 @@ public class RecipeManagerController {
     }
 
     @GetMapping(value = "/page/{page}")
-    public String indexPage(@PathVariable int page, Model theModel) {
+    public String indexPage(@PathVariable int page, Model theModel, @RequestParam(required = false, name = "q") String q) {
         int recipesOnOnePage = 12, pages;
-        List<Recipe> recipes = recipeService.getRecipesByPage(page, recipesOnOnePage);
-        pages = (int) Math.ceil((double) recipeService.getAllRecipes().size() / recipesOnOnePage);
+        List<Recipe> recipes;
+        if ((q == null) || (StringUtils.isBlank(q))) {
+            recipes = recipeService.getRecipesByPage(page, recipesOnOnePage);
+            pages = (int) Math.ceil((double) recipeService.getAllRecipes().size() / recipesOnOnePage);
+        } else {
+            recipes = recipeService.getRecipesByPageAndSearch(page, recipesOnOnePage, q);
+            pages = (int) Math.ceil((double) recipeService.getNumberOfAllSearchedRecipes(q) / recipesOnOnePage);
+        }
         if (pages == 0) {
             pages++;
         }

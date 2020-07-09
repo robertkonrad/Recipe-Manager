@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -161,5 +162,49 @@ public class RecipeDAOImpl implements RecipeDAO {
             }
         }
         session.merge(recipe);
+    }
+
+    @Override
+    public List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        int minRowNum;
+        if (page == 1) {
+            minRowNum = 0;
+        } else {
+            minRowNum = (page - 1) * recipesOnOnePage;
+        }
+        String[] split_q = q.split(" ");
+        // TODO: 09.07.2020 include ingredients search
+        for (String sq : split_q) {
+            List<Recipe> recipes_temp = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
+                    "or lower(r.directions) like lower(concat('%','" + sq + "','%'))", Recipe.class)
+                    .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
+                    .getResultList();
+            for (Recipe recipe : recipes_temp) {
+                if (!recipes.contains(recipe)) {
+                    recipes.add(recipe);
+                }
+            }
+        }
+        return recipes;
+    }
+
+    @Override
+    public int getNumberOfAllSearchedRecipes(String q) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        String[] split_q = q.split(" ");
+        // TODO: 09.07.2020 include ingredients search
+        for (String sq : split_q) {
+            List<Recipe> recipes_temp = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
+                    "or lower(r.directions) like lower(concat('%','" + sq + "','%'))", Recipe.class).getResultList();
+            for (Recipe recipe : recipes_temp) {
+                if (!recipes.contains(recipe)) {
+                    recipes.add(recipe);
+                }
+            }
+        }
+        return recipes.size();
     }
 }

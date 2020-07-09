@@ -8,7 +8,25 @@
 </head>
 <body>
 <div layout:fragment="content">
-
+    <form class="d-flex justify-content-end" method="get" th:action="@{/page/1}">
+        <input th:name="q" th:value="${param.q != null} ? ${param.q[0]} : ''" type="text">
+        <input th:value="Search" type="submit">
+    </form>
+    <div class="search-results" th:if="${param.q != null and param.q[0] != ''}">
+        <span class="search_header" th:text="${param.q}"></span>
+        <a th:href="@{/}">
+            <svg class="bi bi-x-circle" fill="currentColor" height="1em" viewBox="0 0 16 16" width="1em"
+                 xmlns="http://www.w3.org/2000/svg">
+                <path clip-rule="evenodd" d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
+                      fill-rule="evenodd"/>
+                <path clip-rule="evenodd"
+                      d="M11.854 4.146a.5.5 0 010 .708l-7 7a.5.5 0 01-.708-.708l7-7a.5.5 0 01.708 0z"
+                      fill-rule="evenodd"/>
+                <path clip-rule="evenodd" d="M4.146 4.146a.5.5 0 000 .708l7 7a.5.5 0 00.708-.708l-7-7a.5.5 0 00-.708 0z"
+                      fill-rule="evenodd"/>
+            </svg>
+        </a>
+    </div>
     <a class="btn btn-primary" sec:authorize="isAuthenticated()" th:href="@{/recipe/add}">Create new recipe</a>
     <div class="row">
         <div class="col-4 image-center recipe-panel" th:each="recipe : ${recipes}">
@@ -26,7 +44,7 @@
     </div>
     <ul style="text-align: center;" th:if="${pages > 1}">
         <th:block th:each="i: ${#numbers.sequence(1, pages)}">
-            <a th:href="@{'/page/' + ${i}}"
+            <a th:href="${param.q != null} ? @{'/page/' + ${i}(q=${param.q[0]})} : @{'/page/' + ${i}}"
                th:style="${i} == ${page} ? 'color: black; font-weight: bold;' : ''"
                th:text="${i}"></a>
         </th:block>

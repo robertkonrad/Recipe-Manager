@@ -50,4 +50,16 @@ public class RecipeServiceImpl implements RecipeService{
     public void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
         recipeDAO.updateRecipe(recipe, file, ingredientsList);
     }
+
+    @Override
+    @Transactional
+    public List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q) {
+        return recipeDAO.getRecipesByPageAndSearch(page, recipesOnOnePage, q);
+    }
+
+    @Override
+    @Transactional
+    public int getNumberOfAllSearchedRecipes(String q) {
+        return recipeDAO.getNumberOfAllSearchedRecipes(q);
+    }
 }
