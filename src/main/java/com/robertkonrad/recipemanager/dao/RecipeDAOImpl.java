@@ -20,6 +20,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class RecipeDAOImpl implements RecipeDAO {
@@ -67,7 +68,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             recipe.setImage("");
         }
-        int newId = (int)session.save(recipe);
+        int newId = (int) session.save(recipe);
         Recipe newRecipe = session.get(Recipe.class, newId);
         if (!ingredientsList.isEmpty()) {
             for (String[] ingredient : ingredientsList) {
@@ -168,40 +169,65 @@ public class RecipeDAOImpl implements RecipeDAO {
     public List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q) {
         Session session = entityManager.unwrap(Session.class);
         List<Recipe> recipes = new ArrayList<>();
+        List<Recipe> results = new ArrayList<>();
         int minRowNum;
         if (page == 1) {
             minRowNum = 0;
         } else {
             minRowNum = (page - 1) * recipesOnOnePage;
         }
-        String[] split_q = q.split(" ");
-        // TODO: 09.07.2020 include ingredients search
-        for (String sq : split_q) {
-            List<Recipe> recipes_temp = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
-                    "or lower(r.directions) like lower(concat('%','" + sq + "','%'))", Recipe.class)
-                    .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
-                    .getResultList();
-            for (Recipe recipe : recipes_temp) {
+        String[] splitQ = q.split(" ");
+        for (String sq : splitQ) {
+            List<Recipe> recipesQuery = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
+                    "or lower(r.directions) like lower(concat('%','" + sq + "','%'))", Recipe.class).getResultList();
+            List<Integer> recipesQuery2List = session.createQuery(
+                    "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
+                            "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%'))").list();
+            List<Recipe> recipesQuery2 = new ArrayList<>();
+            for (int id : recipesQuery2List){
+                Recipe recipeQuery2 = session.get(Recipe.class, id);
+                recipesQuery2.add(recipeQuery2);
+            }
+            for (Recipe recipe : recipesQuery) {
                 if (!recipes.contains(recipe)) {
                     recipes.add(recipe);
                 }
             }
+            for (Recipe recipe2 : recipesQuery2) {
+                if (!recipes.contains(recipe2)) {
+                    recipes.add(recipe2);
+                }
+            }
+            results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         }
-        return recipes;
+        return results;
     }
 
     @Override
     public int getNumberOfAllSearchedRecipes(String q) {
         Session session = entityManager.unwrap(Session.class);
         List<Recipe> recipes = new ArrayList<>();
-        String[] split_q = q.split(" ");
-        // TODO: 09.07.2020 include ingredients search
-        for (String sq : split_q) {
-            List<Recipe> recipes_temp = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
+        String[] splitQ = q.split(" ");
+        for (String sq : splitQ) {
+            List<Recipe> recipesQuery = session.createQuery("FROM Recipe r WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) " +
                     "or lower(r.directions) like lower(concat('%','" + sq + "','%'))", Recipe.class).getResultList();
-            for (Recipe recipe : recipes_temp) {
+            List<Integer> recipesQuery2List = session.createQuery(
+                    "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
+                            "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%'))").list();
+            List<Recipe> recipesQuery2 = new ArrayList<>();
+            for (int id : recipesQuery2List){
+                Recipe recipeQuery2 = session.get(Recipe.class, id);
+                recipesQuery2.add(recipeQuery2);
+            }
+
+            for (Recipe recipe : recipesQuery) {
                 if (!recipes.contains(recipe)) {
                     recipes.add(recipe);
+                }
+            }
+            for (Recipe recipe2 : recipesQuery2) {
+                if (!recipes.contains(recipe2)) {
+                    recipes.add(recipe2);
                 }
             }
         }
