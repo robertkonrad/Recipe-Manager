@@ -16,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.io.ByteArrayInputStream;
@@ -52,6 +53,7 @@ public class RecipeManagerController {
         }
         theModel.addAttribute("recipes", recipes);
         theModel.addAttribute("pages", pages);
+        theModel.addAttribute("pageTitle", "RecipeManager - Page " + page);
         return "index";
     }
 
@@ -63,6 +65,7 @@ public class RecipeManagerController {
         theModel.addAttribute("recipe", recipe);
         theModel.addAttribute("reviews", reviews);
         theModel.addAttribute("review", review);
+        theModel.addAttribute("pageTitle", "RecipeManager - " + recipe.getTitle());
         return "recipe-details";
     }
 
@@ -70,6 +73,7 @@ public class RecipeManagerController {
     public String addRecipe(Model theModel) {
         Recipe recipe = new Recipe();
         theModel.addAttribute("recipe", recipe);
+        theModel.addAttribute("pageTitle", "RecipeManager - Add new recipe ");
         return "recipe-form";
     }
 
@@ -102,6 +106,7 @@ public class RecipeManagerController {
     public String updateRecipe(@PathVariable int recipeId, Model theModel) {
         Recipe recipe = recipeService.getRecipe(recipeId);
         theModel.addAttribute("recipe", recipe);
+        theModel.addAttribute("pageTitle", "RecipeManager - Update recipe " + recipe.getTitle());
         return "recipe-update-form";
     }
 
@@ -109,7 +114,7 @@ public class RecipeManagerController {
     public Object saveUpdateRecipe(@Valid @ModelAttribute("recipe") Recipe recipe,
                                    BindingResult theBindingResult, @RequestParam(value = "ingredient-li", required = false) String[] ingredients,
                                    @RequestParam(value = "amount-li", required = false) double[] amount, @RequestParam(value = "unit-li", required = false) String[] unit,
-                                   @RequestParam("file") MultipartFile file) {
+                                   @RequestParam("file") MultipartFile file, RedirectAttributes redirectAttributes) {
         if (theBindingResult.hasErrors()) {
             return "recipe-update-form";
         } else {
@@ -123,6 +128,7 @@ public class RecipeManagerController {
                     ingredientsList.add(temp);
                 }
             }
+            redirectAttributes.addFlashAttribute("redirected", "redirected");
             recipeService.updateRecipe(recipe, file, ingredientsList);
             return "redirect:/recipe/{recipeId}";
         }

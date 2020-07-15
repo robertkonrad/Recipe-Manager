@@ -4,6 +4,8 @@
       xmlns:th="http://www.thymeleaf.org">
 
 <head th:fragment="header">
+    <title th:text="${pageTitle}">Title</title>
+    <link rel="icon" type="image/png" th:href="@{/icon/title-icon.png}">
     <!-- CSS only -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
           integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
