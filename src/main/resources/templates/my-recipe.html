@@ -8,13 +8,13 @@
 </head>
 <body>
 <div layout:fragment="content">
-    <form class="d-flex justify-content-end" method="get" th:action="@{/page/1}">
+    <form class="d-flex justify-content-end" method="get" th:action="@{/my-recipes/page/1}">
         <input th:name="q" th:value="${param.q != null} ? ${param.q[0]} : ''" type="text">
         <input th:value="Search" type="submit">
     </form>
     <div class="search-results" th:if="${param.q != null and param.q[0] != ''}">
         <span class="search-header" th:text="${param.q}"></span>
-        <a th:href="@{/}">
+        <a th:href="@{/my-recipes/page/1}">
             <svg class="bi bi-x-circle" fill="currentColor" height="1em" viewBox="0 0 16 16" width="1em"
                  xmlns="http://www.w3.org/2000/svg">
                 <path clip-rule="evenodd" d="M8 15A7 7 0 108 1a7 7 0 000 14zm0 1A8 8 0 108 0a8 8 0 000 16z"
@@ -44,7 +44,7 @@
     </div>
     <ul style="text-align: center;" th:if="${pages > 1}">
         <th:block th:each="i: ${#numbers.sequence(1, pages)}">
-            <a th:href="${param.q != null} ? @{'/page/' + ${i}(q=${param.q[0]})} : @{'/page/' + ${i}}"
+            <a th:href="${param.q != null} ? @{'my-recipes/page/' + ${i}(q=${param.q[0]})} : @{'my-recipes/page/' + ${i}}"
                th:style="${i} == ${page} ? 'color: black; font-weight: bold;' : ''"
                th:text="${i}"></a>
         </th:block>

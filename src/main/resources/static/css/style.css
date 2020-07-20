@@ -79,7 +79,12 @@ ul li input {
     display: table;
 }
 
-.search_header {
+.search-header {
     text-align: center;
     font-size: 3rem;
+}
+
+.active-page {
+    font-weight: bold;
+    font-size: 120%;
 }

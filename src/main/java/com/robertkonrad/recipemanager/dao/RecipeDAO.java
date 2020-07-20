@@ -22,4 +22,12 @@ public interface RecipeDAO {
     List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q);
 
     int getNumberOfAllSearchedRecipes(String q);
+
+    List<Recipe> getUserRecipesByPage(int page, int recipesOnOnePage, String name);
+
+    List<Recipe> getAllUserRecipes(String name);
+
+    List<Recipe> getUserRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name);
+
+    int getNumberOfAllSearchedUserRecipes(String q, String name);
 }

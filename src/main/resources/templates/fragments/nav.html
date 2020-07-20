@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html layout:decorate="~{layouts/main-layout}"
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      xmlns:th="http://www.thymeleaf.org">
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org">
 <head>
 
 </head>
@@ -12,7 +13,15 @@
     <div class="bg-light border-right" id="sidebar-wrapper">
         <div class="sidebar-heading">Recipe Manager</div>
         <div class="list-group list-group-flush">
-            <a th:href="@{/}" class="list-group-item list-group-item-action bg-light">Recipes</a>
+            <a th:classappend="${(#httpServletRequest.getRequestURI().startsWith('/page') ? 'active-page' : ' ')
+            + (#httpServletRequest.getRequestURI().startsWith('/recipe') ? 'active-page' : ' ')}"
+               th:href="@{/}" class="list-group-item list-group-item-action bg-light">Recipes</a>
+            <a sec:authorize="isAuthenticated()"
+               th:classappend="${#httpServletRequest.getRequestURI().startsWith('/my-recipes') ? 'active-page' : ' '}"
+               th:href="@{/my-recipes/page/1}" class="list-group-item list-group-item-action bg-light">My Recipes</a>
+            <a sec:authorize="isAuthenticated()" href="#" class="list-group-item list-group-item-action bg-light">My
+                Cookbook</a>
+            <a href="#" class="list-group-item list-group-item-action bg-light">Advanced Search</a>
         </div>
     </div>
     <!-- /#sidebar-wrapper -->

@@ -11,6 +11,7 @@ import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -156,5 +157,26 @@ public class RecipeManagerController {
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("Content-Disposition", "inline; filename=" + recipe.getTitle() + ".pdf");
         return ResponseEntity.ok().headers(httpHeaders).contentType(MediaType.APPLICATION_PDF).body(new InputStreamResource(byteArrayInputStream));
+    }
+
+    @GetMapping(value = "my-recipes/page/{page}")
+    public String myRecipe(@PathVariable int page, Model theModel, @RequestParam(required = false, name = "q") String q, Authentication authentication) {
+        int recipesOnOnePage = 12, pages;
+        List<Recipe> recipes;
+        if ((q == null) || (StringUtils.isBlank(q))) {
+            recipes = recipeService.getUserRecipesByPage(page, recipesOnOnePage, authentication.getName());
+//            pages = (int) Math.ceil((double) recipeService.getAllUserRecipes(authentication.getName()).size() / recipesOnOnePage);
+            pages = 1;
+        } else {
+            recipes = recipeService.getUserRecipesByPageAndSearch(page, recipesOnOnePage, q, authentication.getName());
+            pages = (int) Math.ceil((double) recipeService.getNumberOfAllSearchedUserRecipes(q, authentication.getName()) / recipesOnOnePage);
+        }
+        if (pages == 0) {
+            pages++;
+        }
+        theModel.addAttribute("recipes", recipes);
+        theModel.addAttribute("pages", pages);
+        theModel.addAttribute("pageTitle", "My Recipe - Page " + page);
+        return "my-recipe";
     }
 }

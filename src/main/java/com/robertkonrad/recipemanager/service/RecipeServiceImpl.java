@@ -62,4 +62,28 @@ public class RecipeServiceImpl implements RecipeService{
     public int getNumberOfAllSearchedRecipes(String q) {
         return recipeDAO.getNumberOfAllSearchedRecipes(q);
     }
+
+    @Override
+    @Transactional
+    public List<Recipe> getUserRecipesByPage(int page, int recipesOnOnePage, String name) {
+        return recipeDAO.getUserRecipesByPage(page, recipesOnOnePage, name);
+    }
+
+    @Override
+    @Transactional
+    public List<Recipe> getAllUserRecipes(String name) {
+        return recipeDAO.getAllUserRecipes(name);
+    }
+
+    @Override
+    @Transactional
+    public List<Recipe> getUserRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name) {
+        return recipeDAO.getUserRecipesByPageAndSearch(page, recipesOnOnePage, q, name);
+    }
+
+    @Override
+    @Transactional
+    public int getNumberOfAllSearchedUserRecipes(String q, String name) {
+        return recipeDAO.getNumberOfAllSearchedUserRecipes(q, name);
+    }
 }
