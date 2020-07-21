@@ -55,6 +55,9 @@ public class User {
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<FavouriteRecipe> favouriteRecipeList;
+
     public User() {
 
     }

@@ -30,4 +30,8 @@ public interface RecipeService {
     List<Recipe> getUserRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name);
 
     int getNumberOfAllSearchedUserRecipes(String q, String name);
+
+    Boolean isFavourite(int recipeId, String name);
+
+    void changeFavouriteRecipeStatus(int recipeId, String name);
 }

@@ -59,14 +59,16 @@ public class RecipeManagerController {
     }
 
     @GetMapping(value = "/recipe/{recipeId}")
-    public String recipeDetails(@PathVariable int recipeId, Model theModel) {
+    public String recipeDetails(@PathVariable int recipeId, Model theModel, Authentication authentication) {
         Recipe recipe = recipeService.getRecipe(recipeId);
         List<Review> reviews = recipe.getReviews();
         Review review = new Review();
+        Boolean isFavourite = recipeService.isFavourite(recipeId, authentication.getName());
         theModel.addAttribute("recipe", recipe);
         theModel.addAttribute("reviews", reviews);
         theModel.addAttribute("review", review);
         theModel.addAttribute("pageTitle", "RecipeManager - " + recipe.getTitle());
+        theModel.addAttribute("isFavourite", isFavourite);
         return "recipe-details";
     }
 
@@ -165,8 +167,7 @@ public class RecipeManagerController {
         List<Recipe> recipes;
         if ((q == null) || (StringUtils.isBlank(q))) {
             recipes = recipeService.getUserRecipesByPage(page, recipesOnOnePage, authentication.getName());
-//            pages = (int) Math.ceil((double) recipeService.getAllUserRecipes(authentication.getName()).size() / recipesOnOnePage);
-            pages = 1;
+            pages = (int) Math.ceil((double) recipeService.getAllUserRecipes(authentication.getName()).size() / recipesOnOnePage);
         } else {
             recipes = recipeService.getUserRecipesByPageAndSearch(page, recipesOnOnePage, q, authentication.getName());
             pages = (int) Math.ceil((double) recipeService.getNumberOfAllSearchedUserRecipes(q, authentication.getName()) / recipesOnOnePage);
@@ -178,5 +179,11 @@ public class RecipeManagerController {
         theModel.addAttribute("pages", pages);
         theModel.addAttribute("pageTitle", "My Recipe - Page " + page);
         return "my-recipe";
+    }
+
+    @PostMapping(value = "/recipe/{recipeId}/favourite")
+    public String favouriteRecipe(@PathVariable int recipeId, Authentication authentication) {
+        recipeService.changeFavouriteRecipeStatus(recipeId, authentication.getName());
+        return "redirect:/recipe/{recipeId}";
     }
 }

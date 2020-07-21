@@ -86,4 +86,16 @@ public class RecipeServiceImpl implements RecipeService{
     public int getNumberOfAllSearchedUserRecipes(String q, String name) {
         return recipeDAO.getNumberOfAllSearchedUserRecipes(q, name);
     }
+
+    @Override
+    @Transactional
+    public Boolean isFavourite(int recipeId, String name) {
+        return recipeDAO.isFavourite(recipeId, name);
+    }
+
+    @Override
+    @Transactional
+    public void changeFavouriteRecipeStatus(int recipeId, String name) {
+        recipeDAO.changeFavouriteRecipeStatus(recipeId, name);
+    }
 }

@@ -48,6 +48,9 @@ public class Recipe {
     @OneToMany(mappedBy = "recipe")
     private List<Review> reviews;
 
+    @OneToMany(mappedBy = "recipe")
+    private List<FavouriteRecipe> favouriteRecipeList;
+
     @Column(name = "image")
     private String image;
 
@@ -55,14 +58,13 @@ public class Recipe {
 
     }
 
-    public Recipe(@NotEmpty(message = "Title cannot be empty!") @NotNull @Size(max = 100) String title, @NotEmpty(message = "Directions cannnot be empty!") @NotNull @Size(max = 8000) String directions, User author, User lastModificatedBy, Date createdDate, Date lastModificated, List<RecipeIngredient> ingredient, String image) {
+    public Recipe(@NotEmpty(message = "Title cannot be empty!") @NotNull @Size(max = 100) String title, @NotEmpty(message = "Directions cannnot be empty!") @NotNull @Size(max = 8000) String directions, User author, User lastModificatedBy, Date createdDate, Date lastModificated, String image) {
         this.title = title;
         this.directions = directions;
         this.author = author;
         this.lastModificatedBy = lastModificatedBy;
         this.createdDate = createdDate;
         this.lastModificated = lastModificated;
-        this.ingredient = ingredient;
         this.image = image;
     }
 
@@ -144,6 +146,14 @@ public class Recipe {
 
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    public List<FavouriteRecipe> getFavouriteRecipeList() {
+        return favouriteRecipeList;
+    }
+
+    public void setFavouriteRecipeList(List<FavouriteRecipe> favouriteRecipeList) {
+        this.favouriteRecipeList = favouriteRecipeList;
     }
 
     @Override
