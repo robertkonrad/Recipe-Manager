@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -91,7 +92,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             minRowNum = (page - 1) * recipesOnOnePage;
         }
-        return session.createQuery("FROM Recipe", Recipe.class)
+        return session.createQuery("FROM Recipe r ORDER BY r.createdDate DESC", Recipe.class)
                 .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
                 .getResultList();
     }
@@ -196,7 +197,7 @@ public class RecipeDAOImpl implements RecipeDAO {
                     recipes.add(recipe2);
                 }
             }
-            results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
+            results = recipes.stream().sorted(Comparator.comparing(Recipe::getCreatedDate, Comparator.reverseOrder())).skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         }
         return results;
     }
@@ -241,7 +242,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             minRowNum = (page - 1) * recipesOnOnePage;
         }
-        return session.createQuery("FROM Recipe r WHERE r.author.username = '" + name + "'", Recipe.class)
+        return session.createQuery("FROM Recipe r WHERE r.author.username = '" + name + "' ORDER BY r.createdDate DESC", Recipe.class)
                 .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
                 .getResultList();
     }
@@ -249,7 +250,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     @Override
     public List<Recipe> getAllUserRecipes(String name) {
         Session session = entityManager.unwrap(Session.class);
-        return session.createQuery("FROM Recipe r WHERE r.author.username = '" + name + "'", Recipe.class).getResultList();
+        return session.createQuery("FROM Recipe r WHERE r.author.username = '" + name + "' ORDER BY r.createdDate DESC", Recipe.class).getResultList();
     }
 
     @Override
@@ -285,7 +286,7 @@ public class RecipeDAOImpl implements RecipeDAO {
                     recipes.add(recipe2);
                 }
             }
-            results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
+            results = recipes.stream().sorted(Comparator.comparing(Recipe::getCreatedDate, Comparator.reverseOrder())).skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         }
         return results;
     }

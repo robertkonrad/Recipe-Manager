@@ -63,12 +63,14 @@ public class RecipeManagerController {
         Recipe recipe = recipeService.getRecipe(recipeId);
         List<Review> reviews = recipe.getReviews();
         Review review = new Review();
-        Boolean isFavourite = recipeService.isFavourite(recipeId, authentication.getName());
+        if (authentication != null) {
+            Boolean isFavourite = recipeService.isFavourite(recipeId, authentication.getName());
+            theModel.addAttribute("isFavourite", isFavourite);
+        }
         theModel.addAttribute("recipe", recipe);
         theModel.addAttribute("reviews", reviews);
         theModel.addAttribute("review", review);
         theModel.addAttribute("pageTitle", "RecipeManager - " + recipe.getTitle());
-        theModel.addAttribute("isFavourite", isFavourite);
         return "recipe-details";
     }
 
