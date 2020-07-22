@@ -1,6 +1,7 @@
 package com.robertkonrad.recipemanager.entity;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "favourite_recipe", schema = "recipemanager")
@@ -15,6 +16,9 @@ public class FavouriteRecipe {
     @JoinColumn(name = "user")
     private User user;
 
+    @Column(name = "created_date")
+    private Date addToFavouriteDate;
+
     @ManyToOne
     @JoinColumn(name = "recipe")
     private Recipe recipe;
@@ -23,8 +27,9 @@ public class FavouriteRecipe {
 
     }
 
-    public FavouriteRecipe(User user, Recipe recipe) {
+    public FavouriteRecipe(User user, Date addToFavouriteDate, Recipe recipe) {
         this.user = user;
+        this.addToFavouriteDate = addToFavouriteDate;
         this.recipe = recipe;
     }
 
@@ -52,12 +57,21 @@ public class FavouriteRecipe {
         this.recipe = recipe;
     }
 
+    public Date getAddToFavouriteDate() {
+        return addToFavouriteDate;
+    }
+
+    public void setAddToFavouriteDate(Date addToFavouriteDate) {
+        this.addToFavouriteDate = addToFavouriteDate;
+    }
+
     @Override
     public String toString() {
         return "FavouriteRecipe{" +
                 "id=" + id +
-                ", user=" + user.getUsername() +
-                ", recipe=" + recipe.getTitle() +
+                ", user=" + user +
+                ", addToFavouriteDate=" + addToFavouriteDate +
+                ", recipe=" + recipe +
                 '}';
     }
 }

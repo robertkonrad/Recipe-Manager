@@ -347,6 +347,8 @@ public class RecipeDAOImpl implements RecipeDAO {
             FavouriteRecipe newFavouriteRecipe = new FavouriteRecipe();
             Recipe recipe = session.get(Recipe.class, recipeId);
             User user = session.get(User.class, name);
+            Date date = new Date();
+            newFavouriteRecipe.setAddToFavouriteDate(date);
             newFavouriteRecipe.setRecipe(recipe);
             newFavouriteRecipe.setUser(user);
             session.save(newFavouriteRecipe);
