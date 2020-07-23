@@ -188,4 +188,24 @@ public class RecipeManagerController {
         recipeService.changeFavouriteRecipeStatus(recipeId, authentication.getName());
         return "redirect:/recipe/{recipeId}";
     }
+
+    @GetMapping(value = "cookbook/page/{page}")
+    public String myCookbook(@PathVariable int page, Model theModel, @RequestParam(required = false, name = "q") String q, Authentication authentication) {
+        int recipesOnOnePage = 12, pages;
+        List<Recipe> recipes;
+        if ((q == null) || (StringUtils.isBlank(q))) {
+            recipes = recipeService.getUserFavouriteRecipesByPage(page, recipesOnOnePage, authentication.getName());
+            pages = (int) Math.ceil((double) recipeService.getAllUserFavouriteRecipes(authentication.getName()).size() / recipesOnOnePage);
+        } else {
+            recipes = recipeService.getUserFavouriteRecipesByPageAndSearch(page, recipesOnOnePage, q, authentication.getName());
+            pages = (int) Math.ceil((double) recipeService.getNumberOfAllSearchedUserFavouriteRecipes(q, authentication.getName()) / recipesOnOnePage);
+        }
+        if (pages == 0) {
+            pages++;
+        }
+        theModel.addAttribute("recipes", recipes);
+        theModel.addAttribute("pages", pages);
+        theModel.addAttribute("pageTitle", "My Cookbook - Page " + page);
+        return "cookbook";
+    }
 }

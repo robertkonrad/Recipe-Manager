@@ -34,4 +34,12 @@ public interface RecipeDAO {
     Boolean isFavourite(int recipeId, String name);
 
     void changeFavouriteRecipeStatus(int recipeId, String name);
+
+    List<Recipe> getUserFavouriteRecipesByPage(int page, int recipesOnOnePage, String name);
+
+    List<Recipe> getAllUserFavouriteRecipes(String name);
+
+    List<Recipe> getUserFavouriteRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name);
+
+    int getNumberOfAllSearchedUserFavouriteRecipes(String q, String name);
 }

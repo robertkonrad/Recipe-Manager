@@ -286,8 +286,8 @@ public class RecipeDAOImpl implements RecipeDAO {
                     recipes.add(recipe2);
                 }
             }
-            results = recipes.stream().sorted(Comparator.comparing(Recipe::getCreatedDate, Comparator.reverseOrder())).skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         }
+        results = recipes.stream().sorted(Comparator.comparing(Recipe::getCreatedDate, Comparator.reverseOrder())).skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         return results;
     }
 
@@ -355,5 +355,118 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             session.delete(favouriteRecipe);
         }
+    }
+
+    @Override
+    public List<Recipe> getUserFavouriteRecipesByPage(int page, int recipesOnOnePage, String name) {
+        Session session = entityManager.unwrap(Session.class);
+        int minRowNum;
+        List<Recipe> recipes = new ArrayList<>();
+        if (page == 1) {
+            minRowNum = 0;
+        } else {
+            minRowNum = (page - 1) * recipesOnOnePage;
+        }
+        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '"+ name + "' ORDER BY frl.addToFavouriteDate DESC")
+                .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
+                .list();
+        for (int id : recipesQueryList) {
+            Recipe recipeQuery = session.get(Recipe.class, id);
+            recipes.add(recipeQuery);
+        }
+        return recipes;
+    }
+
+    @Override
+    public List<Recipe> getAllUserFavouriteRecipes(String name) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '"+ name + "' ORDER BY frl.addToFavouriteDate DESC").list();
+        for (int id : recipesQueryList) {
+            Recipe recipeQuery = session.get(Recipe.class, id);
+            recipes.add(recipeQuery);
+        }
+        return recipes;
+    }
+
+    @Override
+    public List<Recipe> getUserFavouriteRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        List<Recipe> results;
+        int minRowNum;
+        if (page == 1) {
+            minRowNum = 0;
+        } else {
+            minRowNum = (page - 1) * recipesOnOnePage;
+        }
+        String[] splitQ = q.split(" ");
+        for (String sq : splitQ) {
+            List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'" +
+                    "or lower(r.directions) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'").list();
+            // TODO: 23.07.2020 update query with searching in ingredients
+            List<Integer> recipesQuery2List = session.createQuery(
+                    "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
+                            "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%')) and r.author.username = '" + name + "'").list();
+            List<Recipe> recipesQuery = new ArrayList<>();
+            List<Recipe> recipesQuery2 = new ArrayList<>();
+            for (int id : recipesQueryList) {
+                Recipe recipeQuery = session.get(Recipe.class, id);
+                recipesQuery.add(recipeQuery);
+            }
+            for (int id : recipesQuery2List) {
+                Recipe recipeQuery2 = session.get(Recipe.class, id);
+                recipesQuery2.add(recipeQuery2);
+            }
+            for (Recipe recipe : recipesQuery) {
+                if (!recipes.contains(recipe)) {
+                    recipes.add(recipe);
+                }
+            }
+            for (Recipe recipe2 : recipesQuery2) {
+                if (!recipes.contains(recipe2)) {
+                    recipes.add(recipe2);
+                }
+            }
+        }
+        // TODO: 23.07.2020 result sorting
+        results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
+        return results;
+    }
+
+    @Override
+    public int getNumberOfAllSearchedUserFavouriteRecipes(String q, String name) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        String[] splitQ = q.split(" ");
+        for (String sq : splitQ) {
+            List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'" +
+                    "or lower(r.directions) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'").list();
+            // TODO: 23.07.2020 update query with searching in ingredients
+            List<Integer> recipesQuery2List = session.createQuery(
+                    "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
+                            "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%')) and r.author.username = '" + name + "'").list();
+            List<Recipe> recipesQuery = new ArrayList<>();
+            List<Recipe> recipesQuery2 = new ArrayList<>();
+            for (int id : recipesQueryList) {
+                Recipe recipeQuery = session.get(Recipe.class, id);
+                recipesQuery.add(recipeQuery);
+            }
+            for (int id : recipesQuery2List) {
+                Recipe recipeQuery2 = session.get(Recipe.class, id);
+                recipesQuery2.add(recipeQuery2);
+            }
+            for (Recipe recipe : recipesQuery) {
+                if (!recipes.contains(recipe)) {
+                    recipes.add(recipe);
+                }
+            }
+            for (Recipe recipe2 : recipesQuery2) {
+                if (!recipes.contains(recipe2)) {
+                    recipes.add(recipe2);
+                }
+            }
+        }
+        return recipes.size();
     }
 }
