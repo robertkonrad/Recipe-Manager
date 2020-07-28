@@ -367,7 +367,7 @@ public class RecipeDAOImpl implements RecipeDAO {
         } else {
             minRowNum = (page - 1) * recipesOnOnePage;
         }
-        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '"+ name + "' ORDER BY frl.addToFavouriteDate DESC")
+        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '" + name + "' ORDER BY frl.addToFavouriteDate DESC")
                 .setFirstResult(minRowNum).setMaxResults(recipesOnOnePage)
                 .list();
         for (int id : recipesQueryList) {
@@ -381,7 +381,7 @@ public class RecipeDAOImpl implements RecipeDAO {
     public List<Recipe> getAllUserFavouriteRecipes(String name) {
         Session session = entityManager.unwrap(Session.class);
         List<Recipe> recipes = new ArrayList<>();
-        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '"+ name + "' ORDER BY frl.addToFavouriteDate DESC").list();
+        List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE frl.user.username = '" + name + "' ORDER BY frl.addToFavouriteDate DESC").list();
         for (int id : recipesQueryList) {
             Recipe recipeQuery = session.get(Recipe.class, id);
             recipes.add(recipeQuery);
@@ -404,7 +404,6 @@ public class RecipeDAOImpl implements RecipeDAO {
         for (String sq : splitQ) {
             List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'" +
                     "or lower(r.directions) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'").list();
-            // TODO: 23.07.2020 update query with searching in ingredients
             List<Integer> recipesQuery2List = session.createQuery(
                     "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
                             "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%')) and r.author.username = '" + name + "'").list();
@@ -415,8 +414,13 @@ public class RecipeDAOImpl implements RecipeDAO {
                 recipesQuery.add(recipeQuery);
             }
             for (int id : recipesQuery2List) {
-                Recipe recipeQuery2 = session.get(Recipe.class, id);
-                recipesQuery2.add(recipeQuery2);
+                try {
+                    FavouriteRecipe fr = session.createQuery("FROM FavouriteRecipe fr WHERE fr.recipe.id='" + id + "' and fr.user.username='" + name + "'", FavouriteRecipe.class).getSingleResult();
+                    Recipe recipeQuery2 = session.get(Recipe.class, id);
+                    recipesQuery2.add(recipeQuery2);
+                } catch (NoResultException e) {
+
+                }
             }
             for (Recipe recipe : recipesQuery) {
                 if (!recipes.contains(recipe)) {
@@ -429,7 +433,6 @@ public class RecipeDAOImpl implements RecipeDAO {
                 }
             }
         }
-        // TODO: 23.07.2020 result sorting
         results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
         return results;
     }
@@ -442,7 +445,6 @@ public class RecipeDAOImpl implements RecipeDAO {
         for (String sq : splitQ) {
             List<Integer> recipesQueryList = session.createQuery("SELECT r.id FROM Recipe r INNER JOIN r.favouriteRecipeList frl on r.id = frl.recipe.id WHERE lower(r.title) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'" +
                     "or lower(r.directions) like lower(concat('%','" + sq + "','%')) and frl.user.username = '" + name + "'").list();
-            // TODO: 23.07.2020 update query with searching in ingredients
             List<Integer> recipesQuery2List = session.createQuery(
                     "SELECT r.id FROM Recipe r INNER JOIN r.ingredient i " +
                             "on r.id = i.recipe.id WHERE lower(i.ingredientName) like lower(concat('%','" + sq + "','%')) and r.author.username = '" + name + "'").list();
@@ -453,8 +455,13 @@ public class RecipeDAOImpl implements RecipeDAO {
                 recipesQuery.add(recipeQuery);
             }
             for (int id : recipesQuery2List) {
-                Recipe recipeQuery2 = session.get(Recipe.class, id);
-                recipesQuery2.add(recipeQuery2);
+                try {
+                    FavouriteRecipe fr = session.createQuery("FROM FavouriteRecipe fr WHERE fr.recipe.id='" + id + "' and fr.user.username='" + name + "'", FavouriteRecipe.class).getSingleResult();
+                    Recipe recipeQuery2 = session.get(Recipe.class, id);
+                    recipesQuery2.add(recipeQuery2);
+                } catch (NoResultException e) {
+
+                }
             }
             for (Recipe recipe : recipesQuery) {
                 if (!recipes.contains(recipe)) {
