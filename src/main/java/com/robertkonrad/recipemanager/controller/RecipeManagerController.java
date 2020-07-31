@@ -208,4 +208,15 @@ public class RecipeManagerController {
         theModel.addAttribute("pageTitle", "My Cookbook - Page " + page);
         return "cookbook";
     }
+
+    @GetMapping(value = "advanced-search")
+    public String advancedSearch() {
+        return "advanced-search";
+    }
+
+    @PostMapping(value = "advanced-search/results")
+    public String advancedSearchResults(@RequestParam(value = "ingredient-li", required = false) List<String> ingredients) {
+        System.out.println(ingredients.toString());
+        return "advanced-search-results";
+    }
 }

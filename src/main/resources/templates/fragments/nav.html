@@ -29,7 +29,8 @@
                           d="M8 1.314C12.438-3.248 23.534 4.735 8 15-7.534 4.736 3.562-3.248 8 1.314z"/>
                 </svg>
             </a>
-            <a href="#" class="list-group-item list-group-item-action bg-light">Advanced Search</a>
+            <a th:classappend="${#httpServletRequest.getRequestURI().startsWith('/advanced-search') ? 'active-page' : ' '}"
+               th:href="@{/advanced-search}" class="list-group-item list-group-item-action bg-light">Advanced Search</a>
         </div>
     </div>
     <!-- /#sidebar-wrapper -->

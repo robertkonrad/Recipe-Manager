@@ -30,3 +30,19 @@
         var element = e;
         element.parentNode.remove();
     }
+
+    function addSearchItem(){
+        var input = document.createElement("input");
+        input.type = "text";
+        input.name = "ingredient-li";
+        input.placeholder = "Ingredient";
+        var li = document.createElement("li");
+        li.appendChild(input);
+        var ul = document.getElementById("ingredients-ul");
+        var removeBtn = document.createElement("input");
+        removeBtn.type = "button";
+        removeBtn.value = "-";
+        removeBtn.setAttribute("onclick", "remove(this)");
+        li.appendChild(removeBtn);
+        ul.appendChild(li);
+    }

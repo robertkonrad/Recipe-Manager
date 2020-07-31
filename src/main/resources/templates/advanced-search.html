@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html layout:decorate="~{layouts/main-layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org">
+<head>
+    <title>Recipe Manager</title>
+</head>
+<body>
+<div layout:fragment="content">
+    <h2>Insert ingredients which you want in your meal:</h2>
+    <form th:method="post" th:action="@{advanced-search/results}" enctype="multipart/form-data">
+        <table>
+            <tr>
+                <td>Ingredients:</td>
+                <td>
+                    <ul id="ingredients-ul">
+                        <li>
+                            <input type="text" name="ingredient-li" placeholder="Ingredient">
+                        </li>
+                    </ul>
+                    <input type="button" value="Add field" class="add_form_field" onclick="addSearchItem()">
+                </td>
+            </tr>
+            <tr>
+                <td><input type="submit" value="Submit"></td>
+            </tr>
+        </table>
+    </form>
+</div>
+</body>
+</html>
