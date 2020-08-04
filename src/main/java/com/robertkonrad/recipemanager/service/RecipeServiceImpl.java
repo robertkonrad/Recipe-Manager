@@ -122,4 +122,16 @@ public class RecipeServiceImpl implements RecipeService{
     public int getNumberOfAllSearchedUserFavouriteRecipes(String q, String name) {
         return recipeDAO.getNumberOfAllSearchedUserFavouriteRecipes(q, name);
     }
+
+    @Override
+    @Transactional
+    public List<Recipe> getAdvancedSearchRecipesByPageAndSearch(int page, int recipesOnOnePage, List<String> ingredients) {
+        return recipeDAO.getAdvancedSearchRecipesByPageAndSearch(page, recipesOnOnePage, ingredients);
+    }
+
+    @Override
+    @Transactional
+    public int getNumberOfAllAdvancedSearchedRecipes(List<String> ingredients) {
+        return recipeDAO.getNumberOfAllAdvancedSearchedRecipes(ingredients);
+    }
 }

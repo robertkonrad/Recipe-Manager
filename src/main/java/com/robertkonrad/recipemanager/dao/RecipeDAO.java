@@ -42,4 +42,8 @@ public interface RecipeDAO {
     List<Recipe> getUserFavouriteRecipesByPageAndSearch(int page, int recipesOnOnePage, String q, String name);
 
     int getNumberOfAllSearchedUserFavouriteRecipes(String q, String name);
+
+    List<Recipe> getAdvancedSearchRecipesByPageAndSearch(int page, int recipesOnOnePage, List<String> ingredients);
+
+    int getNumberOfAllAdvancedSearchedRecipes(List<String> ingredients);
 }

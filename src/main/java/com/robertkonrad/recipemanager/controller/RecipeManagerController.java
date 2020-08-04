@@ -214,9 +214,15 @@ public class RecipeManagerController {
         return "advanced-search";
     }
 
-    @PostMapping(value = "advanced-search/results")
-    public String advancedSearchResults(@RequestParam(value = "ingredient-li", required = false) List<String> ingredients) {
-        System.out.println(ingredients.toString());
+    @PostMapping(value = "advanced-search/results/page/{page}")
+    public String advancedSearchResults(@RequestParam(value = "ingredient-li", required = false) List<String> ingredients, Model theModel, @PathVariable int page) {
+        int recipesOnOnePage = 12, pages;
+        List<Recipe> recipes;
+        recipes = recipeService.getAdvancedSearchRecipesByPageAndSearch(page, recipesOnOnePage, ingredients);
+        pages = (int) Math.ceil((double) recipeService.getNumberOfAllAdvancedSearchedRecipes(ingredients) / recipesOnOnePage);
+        theModel.addAttribute("recipes", recipes);
+        theModel.addAttribute("pages", pages);
+        theModel.addAttribute("pageTitle", "My Cookbook - Advanced Search - Page " + page);
         return "advanced-search-results";
     }
 }

@@ -15,10 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Repository
@@ -473,6 +470,58 @@ public class RecipeDAOImpl implements RecipeDAO {
                     recipes.add(recipe2);
                 }
             }
+        }
+        return recipes.size();
+    }
+
+    @Override
+    public List<Recipe> getAdvancedSearchRecipesByPageAndSearch(int page, int recipesOnOnePage, List<String> ingredients) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> results;
+        List<Recipe> recipes = new ArrayList<>();
+        List<Recipe> recipesTemp = new ArrayList<>();
+        Set<Integer> recipesId = new HashSet<>();
+        int minRowNum;
+        if (page == 1) {
+            minRowNum = 0;
+        } else {
+            minRowNum = (page - 1) * recipesOnOnePage;
+        }
+        for (String ingredient : ingredients) {
+            if (!ingredient.isEmpty()) {
+                if (recipesId.isEmpty()) {
+                    recipesId.addAll(session.createQuery("SELECT ri.recipe.id FROM RecipeIngredient ri WHERE lower(ri.ingredientName) like lower(concat('%','" + ingredient + "','%'))").list());
+                } else {
+                    recipesTemp = session.createQuery("SELECT ri.recipe.id FROM RecipeIngredient ri WHERE lower(ri.ingredientName) like lower(concat('%','" + ingredient + "','%'))").list();
+                    recipesId.retainAll(recipesTemp);
+                }
+            }
+        }
+        for (int id : recipesId) {
+            recipes.add(session.get(Recipe.class, id));
+        }
+        results = recipes.stream().skip(minRowNum).limit(recipesOnOnePage).collect(Collectors.toList());
+        return results;
+    }
+
+    @Override
+    public int getNumberOfAllAdvancedSearchedRecipes(List<String> ingredients) {
+        Session session = entityManager.unwrap(Session.class);
+        List<Recipe> recipes = new ArrayList<>();
+        List<Recipe> recipesTemp = new ArrayList<>();
+        Set<Integer> recipesId = new HashSet<>();
+        for (String ingredient : ingredients) {
+            if (!ingredient.isEmpty()) {
+                if (recipesId.isEmpty()) {
+                    recipesId.addAll(session.createQuery("SELECT ri.recipe.id FROM RecipeIngredient ri WHERE lower(ri.ingredientName) like lower(concat('%','" + ingredient + "','%'))").list());
+                } else {
+                    recipesTemp = session.createQuery("SELECT ri.recipe.id FROM RecipeIngredient ri WHERE lower(ri.ingredientName) like lower(concat('%','" + ingredient + "','%'))").list();
+                    recipesId.retainAll(recipesTemp);
+                }
+            }
+        }
+        for (int id : recipesId) {
+            recipes.add(session.get(Recipe.class, id));
         }
         return recipes.size();
     }
