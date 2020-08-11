@@ -62,13 +62,11 @@ public class User {
 
     }
 
-    public User(@NotNull @Size(max = 20, message = "Username length must be between 0 and 20 chars.") @NotEmpty(message = "Username cannot be empty.") String username, @Size(max = 68) @NotNull String password, String matchingPassword, @NotNull int enabled, String email, Role role) {
+    public User(@NotNull @Size(max = 20, message = "Username length must be between 0 and 20 chars.") @NotEmpty(message = "Username cannot be empty.") String username, @Size(max = 68) @NotNull String password, @NotNull int enabled, String email) {
         this.username = username;
         this.password = password;
-        this.matchingPassword = matchingPassword;
         this.enabled = enabled;
         this.email = email;
-        this.role = role;
     }
 
     public String getUsername() {

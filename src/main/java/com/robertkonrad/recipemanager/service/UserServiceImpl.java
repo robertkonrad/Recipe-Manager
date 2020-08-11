@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,5 +30,23 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean emailAvailable(String email) {
         return userDAO.emailAvailable(email);
+    }
+
+    @Transactional
+    @Override
+    public List<User> getUsers() {
+        return userDAO.getUsers();
+    }
+
+    @Transactional
+    @Override
+    public String getUserRole(String username) {
+        return userDAO.getUserRole(username);
+    }
+
+    @Transactional
+    @Override
+    public User getUser(String username) {
+        return userDAO.getUser(username);
     }
 }

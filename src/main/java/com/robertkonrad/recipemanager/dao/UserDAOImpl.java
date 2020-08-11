@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.util.List;
 
 @Repository
 public class UserDAOImpl implements UserDAO {
@@ -47,6 +48,29 @@ public class UserDAOImpl implements UserDAO {
             return false;
         } catch (NoResultException e) {
             return true;
+        }
+    }
+
+    @Override
+    public List<User> getUsers() {
+        Session session = entityManager.unwrap(Session.class);
+        return session.createQuery("FROM User", User.class).getResultList();
+    }
+
+    @Override
+    public String getUserRole(String username) {
+        Session session = entityManager.unwrap(Session.class);
+        return session.createQuery("SELECT authority FROM Role WHERE username='" + username + "'", String.class).getSingleResult();
+    }
+
+    @Override
+    public User getUser(String username) {
+        Session session = entityManager.unwrap(Session.class);
+        try {
+            User user = session.createQuery("FROM User WHERE username='" + username + "'", User.class).getSingleResult();
+            return user;
+        } catch (NoResultException e) {
+            return null;
         }
     }
 }
