@@ -1,12 +1,25 @@
 package com.robertkonrad.recipemanager.service;
 
 import com.robertkonrad.recipemanager.dao.RecipeDAO;
+import com.robertkonrad.recipemanager.dao.RecipeIngredientDAO;
+import com.robertkonrad.recipemanager.dao.ReviewDAO;
+import com.robertkonrad.recipemanager.dao.UserDAO;
 import com.robertkonrad.recipemanager.entity.Recipe;
+import com.robertkonrad.recipemanager.entity.RecipeIngredient;
+import com.robertkonrad.recipemanager.entity.Review;
+import com.robertkonrad.recipemanager.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -14,6 +27,15 @@ public class RecipeServiceImpl implements RecipeService{
 
     @Autowired
     private RecipeDAO recipeDAO;
+
+    @Autowired
+    private UserDAO userDAO;
+
+    @Autowired
+    private RecipeIngredientDAO recipeIngredientDAO;
+
+    @Autowired
+    private ReviewDAO reviewDAO;
 
     @Override
     @Transactional
@@ -30,7 +52,31 @@ public class RecipeServiceImpl implements RecipeService{
     @Override
     @Transactional
     public void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
-        recipeDAO.saveRecipe(recipe, file, ingredientsList);
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDAO.getUser(auth.getName());
+        recipe.setAuthor(user);
+        Date date = new Date();
+        recipe.setCreatedDate(date);
+        recipe.setLastModificated(date);
+        if (!file.isEmpty()) {
+            String folder = "src/main/resources/static/img/";
+            Path path = Paths.get(folder + recipe.getTitle() + "-" + file.getOriginalFilename());
+            try {
+                file.transferTo(path);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            recipe.setImage(recipe.getTitle() + "-" + file.getOriginalFilename());
+        } else {
+            recipe.setImage("");
+        }
+        int recipeId = recipeDAO.saveRecipe(recipe);
+        Recipe newRecipe = recipeDAO.getRecipe(recipeId);
+        if (!ingredientsList.isEmpty()) {
+            recipeIngredientDAO.saveOrUpdateIngredients(ingredientsList, newRecipe);
+        }
     }
 
     @Override
@@ -42,13 +88,50 @@ public class RecipeServiceImpl implements RecipeService{
     @Override
     @Transactional
     public void deleteRecipe(int recipeId) {
-        recipeDAO.deleteRecipe(recipeId);
+        Recipe recipe = recipeDAO.getRecipe(recipeId);
+        List<Review> reviews = recipe.getReviews();
+        List<RecipeIngredient> ingredients = recipe.getIngredients();
+        reviewDAO.deleteReviews(reviews);
+        recipeIngredientDAO.deleteIngredients(ingredients);
+        if (!recipe.getImage().equals("")) {
+            String folder = "src/main/resources/static/img/";
+            File file = new File(folder + recipe.getImage());
+            file.delete();
+        }
+        recipeDAO.deleteRecipe(recipe);
     }
 
     @Override
     @Transactional
     public void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList) {
-        recipeDAO.updateRecipe(recipe, file, ingredientsList);
+        Recipe oldRecipe = recipeDAO.getRecipe(recipe.getId());
+        recipe.setCreatedDate(oldRecipe.getCreatedDate());
+        Date date = new Date();
+        recipe.setLastModificated(date);
+        recipe.setAuthor(oldRecipe.getAuthor());
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        User user = userDAO.getUser(auth.getName());
+        recipe.setLastModificatedBy(user);
+        if (!file.isEmpty()) {
+            String folder = "src/main/resources/static/img/";
+            Path path = Paths.get(folder + recipe.getTitle() + "-" + file.getOriginalFilename());
+            try {
+                file.transferTo(path);
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            recipe.setImage(recipe.getTitle() + "-" + file.getOriginalFilename());
+        } else {
+            recipe.setImage(oldRecipe.getImage());
+        }
+        recipeDAO.updateRecipe(recipe);
+        List<RecipeIngredient> ingredients = recipeIngredientDAO.getIngredients(recipe.getId());
+        recipeIngredientDAO.deleteIngredients(ingredients);
+        if (!ingredientsList.isEmpty()) {
+            recipeIngredientDAO.saveOrUpdateIngredients(ingredientsList, recipe);
+        }
     }
 
     @Override

@@ -1,7 +1,6 @@
 package com.robertkonrad.recipemanager.dao;
 
 import com.robertkonrad.recipemanager.entity.Recipe;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -11,13 +10,13 @@ public interface RecipeDAO {
 
     Recipe getRecipe(int recipeId);
 
-    void saveRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
+    int saveRecipe(Recipe recipe);
 
     List<Recipe> getRecipesByPage(int page, int recipesOnOnePage);
 
-    void deleteRecipe(int recipeId);
+    void deleteRecipe(Recipe recipe);
 
-    void updateRecipe(Recipe recipe, MultipartFile file, List<String[]> ingredientsList);
+    void updateRecipe(Recipe recipe);
 
     List<Recipe> getRecipesByPageAndSearch(int page, int recipesOnOnePage, String q);
 

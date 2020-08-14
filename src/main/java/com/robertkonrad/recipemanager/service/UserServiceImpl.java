@@ -1,8 +1,11 @@
 package com.robertkonrad.recipemanager.service;
 
+import com.robertkonrad.recipemanager.dao.RoleDAO;
 import com.robertkonrad.recipemanager.dao.UserDAO;
+import com.robertkonrad.recipemanager.entity.Role;
 import com.robertkonrad.recipemanager.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -14,10 +17,20 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDAO userDAO;
 
+    @Autowired
+    private RoleDAO roleDAO;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     @Transactional
     public void saveUser(User user) {
-        userDAO.saveUser(user);
+        Role role = new Role();
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        String userSaved = userDAO.saveUser(user);
+        role.setUser(userDAO.getUser(userSaved));
+        roleDAO.saveRole(role);
     }
 
     @Transactional
@@ -38,11 +51,6 @@ public class UserServiceImpl implements UserService {
         return userDAO.getUsers();
     }
 
-    @Transactional
-    @Override
-    public String getUserRole(String username) {
-        return userDAO.getUserRole(username);
-    }
 
     @Transactional
     @Override

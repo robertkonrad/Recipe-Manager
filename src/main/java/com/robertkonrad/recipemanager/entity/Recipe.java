@@ -124,11 +124,11 @@ public class Recipe {
         this.lastModificated = lastModificated;
     }
 
-    public List<RecipeIngredient> getIngredient() {
+    public List<RecipeIngredient> getIngredients() {
         return ingredient;
     }
 
-    public void setIngredient(List<RecipeIngredient> ingredient) {
+    public void setIngredients(List<RecipeIngredient> ingredient) {
         this.ingredient = ingredient;
     }
 

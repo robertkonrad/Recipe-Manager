@@ -6,15 +6,13 @@ import java.util.List;
 
 public interface UserDAO {
 
-    void saveUser(User user);
+    String saveUser(User user);
 
     boolean usernameAvailable(String username);
 
     boolean emailAvailable(String email);
 
     List<User> getUsers();
-
-    String getUserRole(String username);
 
     User getUser(String username);
 }

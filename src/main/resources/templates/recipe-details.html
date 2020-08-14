@@ -122,7 +122,7 @@
                 </div>
             </div>
             <div>
-                <ul class="list-group" th:each="ingredient : ${recipe.ingredient}">
+                <ul class="list-group" th:each="ingredient : ${recipe.ingredients}">
                     <li class="list-group-item"
                         th:text="${ingredient.amount} + ' - ' + ${ingredient.unit} + ' - ' + ${ingredient.ingredientName}"></li>
                 </ul>

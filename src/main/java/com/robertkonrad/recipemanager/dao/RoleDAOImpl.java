@@ -1,30 +1,27 @@
 package com.robertkonrad.recipemanager.dao;
 
-import com.robertkonrad.recipemanager.entity.Review;
+import com.robertkonrad.recipemanager.entity.Role;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
-import java.util.List;
 
 @Repository
-public class ReviewDAOImpl implements ReviewDAO {
+public class RoleDAOImpl implements RoleDAO {
 
     @Autowired
-    EntityManager entityManager;
+    private EntityManager entityManager;
 
     @Override
-    public void saveReview(Review review) {
+    public void saveRole(Role role) {
         Session session = entityManager.unwrap(Session.class);
-        session.save(review);
+        session.save(role);
     }
 
     @Override
-    public void deleteReviews(List<Review> reviews) {
+    public String getUserRole(String username) {
         Session session = entityManager.unwrap(Session.class);
-        for (Review review : reviews) {
-            session.delete(review);
-        }
+        return session.createQuery("SELECT authority FROM Role WHERE username='" + username + "'", String.class).getSingleResult();
     }
 }

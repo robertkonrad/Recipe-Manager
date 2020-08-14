@@ -2,7 +2,11 @@ package com.robertkonrad.recipemanager.dao;
 
 import com.robertkonrad.recipemanager.entity.Review;
 
+import java.util.List;
+
 public interface ReviewDAO {
 
-    void saveReview(int recipeId, Review review);
+    void saveReview(Review review);
+
+    void deleteReviews(List<Review> reviews);
 }

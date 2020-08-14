@@ -1,10 +1,8 @@
 package com.robertkonrad.recipemanager.dao;
 
-import com.robertkonrad.recipemanager.entity.Role;
 import com.robertkonrad.recipemanager.entity.User;
 import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -17,17 +15,11 @@ public class UserDAOImpl implements UserDAO {
     @Autowired
     private EntityManager entityManager;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-
     @Override
-    public void saveUser(User user) {
+    public String saveUser(User user) {
         Session session = entityManager.unwrap(Session.class);
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        Role role = new Role();
-        role.setUser(user);
-        session.save(user);
-        session.save(role);
+        String userSaved = (String) session.save(user);
+        return userSaved;
     }
 
     @Override
@@ -55,12 +47,6 @@ public class UserDAOImpl implements UserDAO {
     public List<User> getUsers() {
         Session session = entityManager.unwrap(Session.class);
         return session.createQuery("FROM User", User.class).getResultList();
-    }
-
-    @Override
-    public String getUserRole(String username) {
-        Session session = entityManager.unwrap(Session.class);
-        return session.createQuery("SELECT authority FROM Role WHERE username='" + username + "'", String.class).getSingleResult();
     }
 
     @Override
