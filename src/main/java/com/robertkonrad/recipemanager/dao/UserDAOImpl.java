@@ -18,8 +18,7 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public String saveUser(User user) {
         Session session = entityManager.unwrap(Session.class);
-        String userSaved = (String) session.save(user);
-        return userSaved;
+        return (String) session.save(user);
     }
 
     @Override
@@ -53,8 +52,7 @@ public class UserDAOImpl implements UserDAO {
     public User getUser(String username) {
         Session session = entityManager.unwrap(Session.class);
         try {
-            User user = session.createQuery("FROM User WHERE username='" + username + "'", User.class).getSingleResult();
-            return user;
+            return session.createQuery("FROM User WHERE username='" + username + "'", User.class).getSingleResult();
         } catch (NoResultException e) {
             return null;
         }
