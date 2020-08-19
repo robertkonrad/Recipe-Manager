@@ -45,4 +45,10 @@ public class ReviewServiceImpl implements ReviewService {
     public void deleteReviews(List<Review> reviews) {
         reviewDAO.deleteReviews(reviews);
     }
+
+    @Override
+    @Transactional
+    public Review getReview(int id) {
+        return reviewDAO.getReview(id);
+    }
 }

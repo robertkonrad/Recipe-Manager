@@ -9,4 +9,6 @@ public interface ReviewService {
     void saveReview(int recipeId, Review review);
 
     void deleteReviews(List<Review> reviews);
+
+    Review getReview(int id);
 }

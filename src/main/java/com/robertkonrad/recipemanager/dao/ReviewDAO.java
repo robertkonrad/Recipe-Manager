@@ -9,4 +9,6 @@ public interface ReviewDAO {
     void saveReview(Review review);
 
     void deleteReviews(List<Review> reviews);
+
+    Review getReview(int id);
 }

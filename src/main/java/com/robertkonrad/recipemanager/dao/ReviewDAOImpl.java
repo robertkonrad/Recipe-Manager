@@ -27,4 +27,14 @@ public class ReviewDAOImpl implements ReviewDAO {
             session.delete(review);
         }
     }
+
+    @Override
+    public Review getReview(int id) {
+        Session session = entityManager.unwrap(Session.class);
+        try {
+            return session.get(Review.class, id);
+        } catch (NullPointerException e) {
+            return null;
+        }
+    }
 }
